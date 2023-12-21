@@ -1,9 +1,14 @@
 package com.example.chessexplorer;
 
+import static com.example.chessexplorer.R.*;
+
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -62,7 +67,7 @@ public class Chessboard extends View {
                 drawRectangle(canvas, paint, square_positions[highlight_square[0]][0] ,
                         square_positions[highlight_square[0]][1],
                         square_size, highlight_square[0]);
-                
+
                 paint.setColor(Color.argb(50, 255,0,0));
                 drawRectangle(canvas, paint, square_positions[highlight_square[1]][0] ,
                         square_positions[highlight_square[1]][1],
@@ -93,12 +98,18 @@ public class Chessboard extends View {
 
     private void drawRectangle(Canvas canvas, Paint paint, float origin_x, float origin_y,
                                float size, int square_ref){
+        Bitmap bmp = BitmapFactory.decodeResource(getResources(), drawable.black_bishop);
         square_positions[square_ref][0] = origin_x;
         square_positions[square_ref][1] = origin_y;
         square_positions[square_ref][2] = origin_x + size;
         square_positions[square_ref][3] = origin_y + size;
         canvas.drawRect(square_positions[square_ref][0], square_positions[square_ref][1],
                 square_positions[square_ref][2], square_positions[square_ref][3], paint);
+
+        Rect rect_src = new Rect(0, 0, bmp.getWidth(), bmp.getHeight());
+        Rect rect_dst = new Rect((int)square_positions[square_ref][0], (int)square_positions[square_ref][1],
+                (int)square_positions[square_ref][2], (int)square_positions[square_ref][3]);
+        canvas.drawBitmap(bmp, rect_src, rect_dst, paint);
     }
 
     private int[] getSquareClicked(){
