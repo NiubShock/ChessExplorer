@@ -39,25 +39,14 @@ import android.graphics.Paint;
 
 public class Chessboard extends View {
 
-    /* Enum to define the piece definition */
-    enum pieces_number{
-        none,
-        pawn,
-        rook,
-        knight,
-        bishop,
-        queen,
-        king
-    }
+    float[][]       square_positions;
 
-    float[][] square_positions;
+    float           move_x_start, move_y_start;
+    float           move_x_end, move_y_end;
+    boolean         starting_point                  = true;
+    boolean         new_move                        = false;
 
-    float move_x_start;
-    float move_y_start;
-    float move_x_end;
-    float move_y_end;
-    boolean starting_point  = true;
-    boolean new_move        = false;
+    Rect            rect_size;
 
     Paint paint = new Paint();
 
@@ -66,105 +55,146 @@ public class Chessboard extends View {
     public Chessboard (Context context, View v) {
         super(context);
 
-        /* Store the square positions to change color later */
+        /* Store the coordinates of the the squares */
         square_positions = new float[64][4];
+        /* Store the array of Squares */
+        chessboardSquare = new ChessboardSquare[64];
 
         /* Determine the dimensions of the square */
-        float size_x_rect = (float) (this.getWidth()/8.0);
-        float size_y_rect = (float) (this.getHeight()/8.0);
+        /* -------------------------------------- */
+        float size_x_rect = 135; //(float) (this.getWidth()/8.0);
+        float size_y_rect = 135; //(float) (this.getHeight()/8.0);
         float square_size;
 
         if (size_x_rect < size_y_rect)  square_size = size_x_rect;
         else                            square_size = size_y_rect;
 
-        chessboardSquare = new ChessboardSquare[64];
+        /* Declare the square size */
+        rect_size = new Rect(0, 0, (int) size_x_rect, (int) size_y_rect);
+        /* -------------------------------------------------------------------------------------- */
 
+        /* Load the chess board */
+        setChessPosition();
+
+        /* Load the coordinates */
+        loadCoordinates();
+
+    }
+
+    /* This function loads the coordinates of the rectangles in an array */
+    private void loadCoordinates(){
+        for (int i = 0; i < 64; i++){
+            square_positions[i][0] = chessboardSquare[i].getRectCoordinates().left;
+            square_positions[i][1] = chessboardSquare[i].getRectCoordinates().top;
+            square_positions[i][2] = chessboardSquare[i].getRectCoordinates().right;
+            square_positions[i][3] = chessboardSquare[i].getRectCoordinates().bottom;
+        }
+    }
+
+    /* This function set the position of the chess pieces and the squares at the startup */
+    private void setChessPosition(){
+
+        int color;
+        int square_position;
+
+        Bitmap bmp_size = BitmapFactory.decodeResource(getResources(), drawable.black_pawn);
+
+        /* Load the btm size and the square properties */
+        /* ------------------------------------------- */
+        for (int i = 0; i < 8; i ++){
+            for (int j = 0; j < 8; j++){
+                /* Prepare the color of the square */
+                /* ------------------------------- */
+                if ((i+j) % 2 == 0){
+                    color = Color.LTGRAY;
+                } else {
+                    color = Color.DKGRAY;
+                }
+                /* ------------------------------------------------------------------------------ */
+
+                /* Load the square position and an empty bmp */
+                square_position = i * 8 + j;
+                /* Load the data, not the Bitmap */
+                Bitmap bmp = Bitmap.createBitmap(rect_size.width(), rect_size.height(), Bitmap.Config.ARGB_8888);
+                Rect rect_src = new Rect(0, 0, bmp_size.getWidth(), bmp_size.getHeight());
+                ChessPiece piece = new ChessPiece(bmp, square_position, ChessPiece.pieces_number.none, rect_src);
+
+                chessboardSquare[square_position] = new ChessboardSquare(color, piece, square_position, rect_size);
+            }
+        }
+        /* -------------------------------------------------------------------------------------- */
+
+        /* Place the pieces */
+        /* ---------------- */
+        {
+            Bitmap bmp = BitmapFactory.decodeResource(getResources(), drawable.black_pawn);
+            for (int i = 0; i < 8; i++) {
+                chessboardSquare[8 + i].loadNewBmp(bmp);
+            }
+
+            bmp = BitmapFactory.decodeResource(getResources(), drawable.black_rook);
+            chessboardSquare[0].loadNewBmp(bmp);
+            chessboardSquare[7].loadNewBmp(bmp);
+
+            bmp = BitmapFactory.decodeResource(getResources(), drawable.black_knight);
+            chessboardSquare[1].loadNewBmp(bmp);
+            chessboardSquare[6].loadNewBmp(bmp);
+
+            bmp = BitmapFactory.decodeResource(getResources(), drawable.black_bishop);
+            chessboardSquare[2].loadNewBmp(bmp);
+            chessboardSquare[5].loadNewBmp(bmp);
+
+            bmp = BitmapFactory.decodeResource(getResources(), drawable.black_queen);
+            chessboardSquare[3].loadNewBmp(bmp);
+
+            bmp = BitmapFactory.decodeResource(getResources(), drawable.black_king);
+            chessboardSquare[4].loadNewBmp(bmp);
+
+            bmp = BitmapFactory.decodeResource(getResources(), drawable.white_pawn);
+            for (int i = 0; i < 8; i++) {
+                chessboardSquare[48 + i].loadNewBmp(bmp);
+            }
+
+            bmp = BitmapFactory.decodeResource(getResources(), drawable.white_rook);
+            chessboardSquare[56].loadNewBmp(bmp);
+            chessboardSquare[61].loadNewBmp(bmp);
+
+            bmp = BitmapFactory.decodeResource(getResources(), drawable.white_knight);
+            chessboardSquare[57].loadNewBmp(bmp);
+            chessboardSquare[62].loadNewBmp(bmp);
+
+            bmp = BitmapFactory.decodeResource(getResources(), drawable.white_bishop);
+            chessboardSquare[58].loadNewBmp(bmp);
+            chessboardSquare[63].loadNewBmp(bmp);
+
+            bmp = BitmapFactory.decodeResource(getResources(), drawable.white_queen);
+            chessboardSquare[59].loadNewBmp(bmp);
+
+            bmp = BitmapFactory.decodeResource(getResources(), drawable.white_king);
+            chessboardSquare[60].loadNewBmp(bmp);
+        }
+        /* -------------------------------------------------------------------------------------- */
     }
 
     @Override
     protected void onDraw(@NonNull Canvas canvas){
         super.onDraw(canvas);
 
-        /* Determine the dimensions of the square */
-        float size_x_rect = (float) (this.getWidth()/8.0);
-        float size_y_rect = (float) (this.getHeight()/8.0);
-        float square_size;
-
-        if (size_x_rect < size_y_rect)  square_size = size_x_rect;
-        else                            square_size = size_y_rect;
-
-        Rect rect_size = new Rect(0,0,(int) square_size, (int) square_size);
-
         for (int i = 0; i < 8; i ++){
             for (int j = 0; j < 8; j++){
-                if ((i+j) % 2 == 0){
-                    Bitmap bmp = BitmapFactory.decodeResource(getResources(), drawable.black_bishop);
-                    Rect rect_src = new Rect(0, 0, bmp.getWidth(), bmp.getHeight());
-                    Rect rect_dst = new Rect((int)square_positions[i * 8 + j][0], (int)square_positions[i * 8 + j][1],
-                            (int)square_positions[i * 8 + j][2], (int)square_positions[i * 8 + j][3]);
-                    ChessPiece piece = new ChessPiece(bmp, i * 8 + j, 1, rect_src);
-
-                    chessboardSquare[i * 8 + j] = new ChessboardSquare(Color.LTGRAY, piece, i * 8 + j, rect_size);
-                    chessboardSquare[i * 8 + j].drawSquare(canvas);
-                }
-                else {
-                    paint.setColor(Color.DKGRAY);
-                    drawRectangle(canvas, paint, i * square_size , j * square_size,
-                            square_size, i * 8 + j);
-                }
+                chessboardSquare[i * 8 + j].drawSquare(canvas);
             }
         }
 
         if (new_move == true){
             int [] highlight_square = getSquareClicked();
 
-            if (highlight_square[0] >= 0 && highlight_square[1] >= 0){
-                paint.setColor(Color.argb(50, 255,0,0));
-                drawRectangle(canvas, paint, square_positions[highlight_square[0]][0] ,
-                        square_positions[highlight_square[0]][1],
-                        square_size, highlight_square[0]);
-
-                paint.setColor(Color.argb(50, 255,0,0));
-                drawRectangle(canvas, paint, square_positions[highlight_square[1]][0] ,
-                        square_positions[highlight_square[1]][1],
-                        square_size, highlight_square[1]);
+            if (highlight_square[0] >= 0 && highlight_square[1] >= 0) {
+                chessboardSquare[highlight_square[0]].highlightSquare(canvas);
+                chessboardSquare[highlight_square[1]].highlightSquare(canvas);
             }
-
             new_move = false;
         }
-
-//        for (int i = 0; i < 8; i ++){
-//            for (int j = 0; j < 8; j++){
-//                if ((i+j) % 2 == 0){
-//                    paint.setColor(Color.LTGRAY);
-//                    drawRectangle(canvas, paint, i * square_size , j * square_size,
-//                            square_size, i * 8 + j);
-//                }
-//                else {
-//                    paint.setColor(Color.DKGRAY);
-//                    drawRectangle(canvas, paint, i * square_size , j * square_size,
-//                            square_size, i * 8 + j);
-//                }
-//            }
-//        }
-//
-//        if (new_move == true){
-//            int [] highlight_square = getSquareClicked();
-//
-//            if (highlight_square[0] >= 0 && highlight_square[1] >= 0){
-//                paint.setColor(Color.argb(50, 255,0,0));
-//                drawRectangle(canvas, paint, square_positions[highlight_square[0]][0] ,
-//                        square_positions[highlight_square[0]][1],
-//                        square_size, highlight_square[0]);
-//
-//                paint.setColor(Color.argb(50, 255,0,0));
-//                drawRectangle(canvas, paint, square_positions[highlight_square[1]][0] ,
-//                        square_positions[highlight_square[1]][1],
-//                        square_size, highlight_square[1]);
-//            }
-//
-//            new_move = false;
-//        }
     }
 
     @Override
@@ -180,28 +210,9 @@ public class Chessboard extends View {
             starting_point = true;
             new_move = true;
 
-            postInvalidate();
+            invalidate();
         }
         return super.onTouchEvent(event);
-    }
-
-    private void drawRectangle(Canvas canvas, Paint paint, float origin_x, float origin_y,
-                               float size, int square_ref){
-        Bitmap bmp = BitmapFactory.decodeResource(getResources(), drawable.black_bishop);
-        square_positions[square_ref][0] = origin_x;
-        square_positions[square_ref][1] = origin_y;
-        square_positions[square_ref][2] = origin_x + size;
-        square_positions[square_ref][3] = origin_y + size;
-        canvas.drawRect(square_positions[square_ref][0], square_positions[square_ref][1],
-                square_positions[square_ref][2], square_positions[square_ref][3], paint);
-
-        Rect rect_src = new Rect(0, 0, bmp.getWidth(), bmp.getHeight());
-        Rect rect_dst = new Rect((int)square_positions[square_ref][0], (int)square_positions[square_ref][1],
-                (int)square_positions[square_ref][2], (int)square_positions[square_ref][3]);
-//        canvas.drawBitmap(bmp, rect_src, rect_dst, paint);
-
-        ChessPiece piece = new ChessPiece(bmp, square_ref, 1, rect_src);
-        piece.drawPiece(canvas, rect_dst);
     }
 
     private int[] getSquareClicked(){

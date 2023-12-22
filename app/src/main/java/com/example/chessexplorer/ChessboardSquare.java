@@ -1,6 +1,7 @@
 package com.example.chessexplorer;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,20 +24,34 @@ public class ChessboardSquare {
         rect_size       = rect_size_init;
 
         paint = new Paint();
-    }
 
-    public void drawSquare(Canvas canvas){
         int x,y;
 
         x = square_number % 8;
         y = ((square_number - x) / 8) * rect_size.width();
         x = x * rect_size.width();
 
-        paint.setColor(color);
         rect_position = new Rect(x, y, x + rect_size.width(), y + rect_size.height());
+    }
+
+    public void drawSquare(Canvas canvas){
+        paint.setColor(color);
         canvas.drawRect(rect_position, paint);
 
         piece.drawPiece(canvas, rect_position);
+    }
+
+    public void highlightSquare(Canvas canvas){
+        paint.setColor(Color.argb(50, 255, 0, 0));
+        canvas.drawRect(rect_position, paint);
+    }
+
+    public void loadNewBmp(Bitmap bmp){
+        piece.loadNewBmp(bmp);
+    }
+
+    public Rect getRectCoordinates(){
+        return rect_position;
     }
 
 }
