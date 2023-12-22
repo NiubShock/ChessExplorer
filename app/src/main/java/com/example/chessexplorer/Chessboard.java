@@ -41,8 +41,9 @@ public class Chessboard extends View {
 
     float[][]       square_positions;
 
-    float           move_x_start, move_y_start;
-    float           move_x_end, move_y_end;
+    float           move_x_start = -1, move_y_start = -1;
+    float           move_x_end = -1, move_y_end = -1;
+
     boolean         starting_point                  = true;
     boolean         new_move                        = false;
 
@@ -180,21 +181,31 @@ public class Chessboard extends View {
     protected void onDraw(@NonNull Canvas canvas){
         super.onDraw(canvas);
 
+        /* Draw all the element in the chessboard */
+        /* -------------------------------------- */
         for (int i = 0; i < 8; i ++){
             for (int j = 0; j < 8; j++){
                 chessboardSquare[i * 8 + j].drawSquare(canvas);
             }
         }
+        /* -------------------------------------------------------------------------------------- */
+
+        /* Highlight the selected square and show the possible moves */
+        /* --------------------------------------------------------- */
+        int [] highlight_square = getSquareClicked();
+
+        if (highlight_square[0] >= 0){
+            chessboardSquare[highlight_square[0]].highlightSquare(canvas);
+        }
+
+        if (highlight_square[1] >= 0 && new_move == true) {
+            chessboardSquare[highlight_square[1]].highlightSquare(canvas);
+        }
 
         if (new_move == true){
-            int [] highlight_square = getSquareClicked();
-
-            if (highlight_square[0] >= 0 && highlight_square[1] >= 0) {
-                chessboardSquare[highlight_square[0]].highlightSquare(canvas);
-                chessboardSquare[highlight_square[1]].highlightSquare(canvas);
-            }
             new_move = false;
         }
+        /* -------------------------------------------------------------------------------------- */
     }
 
     @Override
@@ -209,9 +220,10 @@ public class Chessboard extends View {
             move_y_end = event.getY();
             starting_point = true;
             new_move = true;
-
-            invalidate();
         }
+
+        postInvalidate();
+
         return super.onTouchEvent(event);
     }
 
@@ -233,12 +245,13 @@ public class Chessboard extends View {
             }
         }
 
-        if (elemx == true && elemy == true){
-            return result;
-        }else{
+        if (elemx == false){
             result[0] = -1;
-            result[1] = -1;
-            return result;
         }
+        if (elemy == false){
+            result[1] = -1;
+        }
+
+        return result;
     }
 }
