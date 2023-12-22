@@ -2,6 +2,8 @@ package com.example.chessexplorer;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -30,9 +32,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        binding = ActivityMainBinding.inflate(getLayoutInflater());
-//        setContentView(binding.getRoot());
-//
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
 //        BottomNavigationView navView = findViewById(R.id.nav_view);
 //        // Passing each menu ID as a set of Ids because each
 //        // menu should be considered as top level destinations.
@@ -40,8 +42,9 @@ public class MainActivity extends AppCompatActivity {
 //                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
 //                .build();
 
-        chessboard = new Chessboard(this);
-        chessboard.setBackgroundColor(Color.WHITE);
+        View v = findViewById(R.id.view);
+        chessboard = new Chessboard(this, v);
+
         setContentView(chessboard);
 
 

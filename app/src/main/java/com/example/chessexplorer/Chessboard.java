@@ -11,10 +11,44 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.ui.AppBarConfiguration;
+
+import com.example.chessexplorer.databinding.ActivityMainBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 public class Chessboard extends View {
+
+    /* Enum to define the piece definition */
+    enum pieces_number{
+        none,
+        pawn,
+        rook,
+        knight,
+        bishop,
+        queen,
+        king
+    }
 
     float[][] square_positions;
 
@@ -26,15 +60,14 @@ public class Chessboard extends View {
     boolean new_move        = false;
 
     Paint paint = new Paint();
-    public Chessboard (Context context) {
+
+    ChessboardSquare[] chessboardSquare;
+
+    public Chessboard (Context context, View v) {
         super(context);
 
         /* Store the square positions to change color later */
         square_positions = new float[64][4];
-    }
-
-    @Override
-    protected void onDraw(@NonNull Canvas canvas){
 
         /* Determine the dimensions of the square */
         float size_x_rect = (float) (this.getWidth()/8.0);
@@ -44,15 +77,38 @@ public class Chessboard extends View {
         if (size_x_rect < size_y_rect)  square_size = size_x_rect;
         else                            square_size = size_y_rect;
 
+        chessboardSquare = new ChessboardSquare[64];
+
+    }
+
+    @Override
+    protected void onDraw(@NonNull Canvas canvas){
+        super.onDraw(canvas);
+
+        /* Determine the dimensions of the square */
+        float size_x_rect = (float) (this.getWidth()/8.0);
+        float size_y_rect = (float) (this.getHeight()/8.0);
+        float square_size;
+
+        if (size_x_rect < size_y_rect)  square_size = size_x_rect;
+        else                            square_size = size_y_rect;
+
+        Rect rect_size = new Rect(0,0,(int) square_size, (int) square_size);
+
         for (int i = 0; i < 8; i ++){
             for (int j = 0; j < 8; j++){
                 if ((i+j) % 2 == 0){
-                    paint.setColor(Color.DKGRAY);
-                    drawRectangle(canvas, paint, i * square_size , j * square_size,
-                            square_size, i * 8 + j);
+                    Bitmap bmp = BitmapFactory.decodeResource(getResources(), drawable.black_bishop);
+                    Rect rect_src = new Rect(0, 0, bmp.getWidth(), bmp.getHeight());
+                    Rect rect_dst = new Rect((int)square_positions[i * 8 + j][0], (int)square_positions[i * 8 + j][1],
+                            (int)square_positions[i * 8 + j][2], (int)square_positions[i * 8 + j][3]);
+                    ChessPiece piece = new ChessPiece(bmp, i * 8 + j, 1, rect_src);
+
+                    chessboardSquare[i * 8 + j] = new ChessboardSquare(Color.LTGRAY, piece, i * 8 + j, rect_size);
+                    chessboardSquare[i * 8 + j].drawSquare(canvas);
                 }
                 else {
-                    paint.setColor(Color.LTGRAY);
+                    paint.setColor(Color.DKGRAY);
                     drawRectangle(canvas, paint, i * square_size , j * square_size,
                             square_size, i * 8 + j);
                 }
@@ -76,6 +132,39 @@ public class Chessboard extends View {
 
             new_move = false;
         }
+
+//        for (int i = 0; i < 8; i ++){
+//            for (int j = 0; j < 8; j++){
+//                if ((i+j) % 2 == 0){
+//                    paint.setColor(Color.LTGRAY);
+//                    drawRectangle(canvas, paint, i * square_size , j * square_size,
+//                            square_size, i * 8 + j);
+//                }
+//                else {
+//                    paint.setColor(Color.DKGRAY);
+//                    drawRectangle(canvas, paint, i * square_size , j * square_size,
+//                            square_size, i * 8 + j);
+//                }
+//            }
+//        }
+//
+//        if (new_move == true){
+//            int [] highlight_square = getSquareClicked();
+//
+//            if (highlight_square[0] >= 0 && highlight_square[1] >= 0){
+//                paint.setColor(Color.argb(50, 255,0,0));
+//                drawRectangle(canvas, paint, square_positions[highlight_square[0]][0] ,
+//                        square_positions[highlight_square[0]][1],
+//                        square_size, highlight_square[0]);
+//
+//                paint.setColor(Color.argb(50, 255,0,0));
+//                drawRectangle(canvas, paint, square_positions[highlight_square[1]][0] ,
+//                        square_positions[highlight_square[1]][1],
+//                        square_size, highlight_square[1]);
+//            }
+//
+//            new_move = false;
+//        }
     }
 
     @Override
@@ -91,7 +180,7 @@ public class Chessboard extends View {
             starting_point = true;
             new_move = true;
 
-            invalidate();
+            postInvalidate();
         }
         return super.onTouchEvent(event);
     }
@@ -109,7 +198,10 @@ public class Chessboard extends View {
         Rect rect_src = new Rect(0, 0, bmp.getWidth(), bmp.getHeight());
         Rect rect_dst = new Rect((int)square_positions[square_ref][0], (int)square_positions[square_ref][1],
                 (int)square_positions[square_ref][2], (int)square_positions[square_ref][3]);
-        canvas.drawBitmap(bmp, rect_src, rect_dst, paint);
+//        canvas.drawBitmap(bmp, rect_src, rect_dst, paint);
+
+        ChessPiece piece = new ChessPiece(bmp, square_ref, 1, rect_src);
+        piece.drawPiece(canvas, rect_dst);
     }
 
     private int[] getSquareClicked(){
@@ -138,6 +230,4 @@ public class Chessboard extends View {
             return result;
         }
     }
-
-
 }
