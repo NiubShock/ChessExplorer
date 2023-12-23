@@ -38,6 +38,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import java.util.ArrayList;
+
 public class Chessboard extends View {
 
     float[][]       square_positions;
@@ -54,7 +56,7 @@ public class Chessboard extends View {
 
     ChessboardSquare[] chessboardSquare;
     ChessRuler          chessRuler;
-    int [] possible_moves;
+    ArrayList<Integer>  possible_moves;
 
     public Chessboard (Context context, View v) {
         super(context);
@@ -242,9 +244,9 @@ public class Chessboard extends View {
             possible_moves = chessRuler.getPossibleMoves(highlight_square[0]);
 
             /* Check if the result is valid -> Return -1 if no piece selected */
-            if (possible_moves[0] > 0) {
-                for (int i = 0; i < possible_moves.length; i++) {
-                    chessboardSquare[possible_moves[i]].drawOval(canvas);
+            if (possible_moves.isEmpty() == false) {
+                for (int i = 0; i < possible_moves.size(); i++) {
+                    chessboardSquare[possible_moves.get(i)].drawOval(canvas);
                 }
             }
         }
@@ -257,8 +259,8 @@ public class Chessboard extends View {
             boolean move_found = false;
 
             /* Check if the move was legal */
-            for (int i = 0; i < possible_moves.length; i++){
-                if (possible_moves[i] == highlight_square[1]){
+            for (int i = 0; i < possible_moves.size(); i++){
+                if (possible_moves.get(i) == highlight_square[1]){
                     chessboardSquare[highlight_square[1]].highlightSquare(canvas);
                     move_found = true;
                 }

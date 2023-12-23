@@ -1,5 +1,6 @@
 package com.example.chessexplorer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChessRuler {
@@ -10,12 +11,11 @@ public class ChessRuler {
         chessboard = chessboardSquare;
     }
 
-    public int[] getPossibleMoves(int selected_square){
-        int[] possible_moves;
+    public ArrayList<Integer> getPossibleMoves(int selected_square){
+        ArrayList<Integer> possible_moves = new ArrayList<>();
         switch(chessboard[selected_square].getPieceType()){
             case pawn:
-                possible_moves = checkPawn(selected_square);
-                return possible_moves;
+                return (checkPawn(selected_square));
             case rook:
                 break;
             case knight:
@@ -27,49 +27,72 @@ public class ChessRuler {
             case king:
                 break;
             case none:
-                possible_moves = new int[1];
-                possible_moves[0] = -1;
                 return possible_moves;
         }
-
-        possible_moves = new int[1];
-        possible_moves[0] = -1;
         return possible_moves;
     }
 
-    private int[] checkPawn(int selected_square){
+    private ArrayList<Integer> checkPawn(int selected_square){
         ChessPiece piece = chessboard[selected_square].getPiece();
-        int[] moves;
+        ArrayList<Integer> possible_moves = new ArrayList<>();
 
         /* Check if it is white */
         if (piece.getColor() == ChessPiece.chess_colors.white){
             /* Check if it is the first move */
             if (selected_square > 47 && selected_square < 56){
-                moves = new int[2];
-                moves[0] = selected_square - 8;
-                moves[1] = selected_square - 16;
+                if (chessboard[selected_square - 8].isEmpty() == true){
+                    possible_moves.add(selected_square - 8);
+                }
+                if (chessboard[selected_square - 16].isEmpty() == true) {
+                    possible_moves.add(selected_square - 16);
+                }
             }
             /* Not the first move */
             else {
-                moves = new int[1];
-                moves[0] = selected_square - 8;
+                if (chessboard[selected_square - 8].isEmpty() == true){
+                    possible_moves.add(selected_square - 8);
+                }
             }
+
+            /* Check if can capture */
+            if (chessboard[selected_square - 7].getPiece().getPieceType() != ChessPiece.pieces_number.none){
+                possible_moves.add(selected_square - 7);
+            }
+            if (chessboard[selected_square - 9].getPiece().getPieceType() != ChessPiece.pieces_number.none){
+                possible_moves.add(selected_square - 9);
+            }
+
+            /* TODO: Promotion check */
         }
         else {
             /* Check if it is the first move */
             if (selected_square > 7 && selected_square < 16){
-                moves = new int[2];
-                moves[0] = selected_square + 8;
-                moves[1] = selected_square + 16;
+                if (chessboard[selected_square + 8].isEmpty() == true){
+                    possible_moves.add(selected_square + 8);
+                }
+                if (chessboard[selected_square + 16].isEmpty() == true){
+                    possible_moves.add(selected_square + 16);
+                }
             }
             /* Not the first move */
             else {
-                moves = new int[1];
-                moves[0] = selected_square + 8;
+                if (chessboard[selected_square + 8].isEmpty() == true){
+                    possible_moves.add(selected_square + 8);
+                }
             }
+
+            /* Check if can capture */
+            if (chessboard[selected_square + 7].getPiece().getPieceType() != ChessPiece.pieces_number.none){
+                possible_moves.add(selected_square + 7);
+            }
+            if (chessboard[selected_square + 9].getPiece().getPieceType() != ChessPiece.pieces_number.none){
+                possible_moves.add(selected_square + 9);
+            }
+
+            /* TODO: Promotion check */
         }
 
-        return moves;
+        return possible_moves;
     }
 
     public void updateChessboard(ChessboardSquare[] new_chessboard){

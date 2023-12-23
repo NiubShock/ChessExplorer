@@ -87,6 +87,15 @@ public class ChessboardSquare {
 
         piece = new ChessPiece(bmp, square_number, ChessPiece.pieces_number.none, rect_size);
     }
+
+    public boolean isEmpty(){
+        if (piece.getPieceType() == ChessPiece.pieces_number.none){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     public void loadPieceType(ChessPiece.pieces_number piece_type_new){
         piece.loadPieceType(piece_type_new);
     }
