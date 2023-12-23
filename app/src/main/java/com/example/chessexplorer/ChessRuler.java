@@ -49,17 +49,21 @@ public class ChessRuler {
             }
             /* Not the first move */
             else {
-                if (chessboard[selected_square - 8].isEmpty() == true){
-                    possible_moves.add(selected_square - 8);
+                if (selected_square - 8 > 0){
+                    if (chessboard[selected_square - 8].isEmpty() == true){
+                        possible_moves.add(selected_square - 8);
+                    }
                 }
             }
 
-            /* Check if can capture */
-            if (chessboard[selected_square - 7].getPiece().getPieceType() != ChessPiece.pieces_number.none){
-                possible_moves.add(selected_square - 7);
-            }
-            if (chessboard[selected_square - 9].getPiece().getPieceType() != ChessPiece.pieces_number.none){
-                possible_moves.add(selected_square - 9);
+            if (selected_square > 8) {
+                /* Check if can capture */
+                if (chessboard[selected_square - 7].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                    possible_moves.add(selected_square - 7);
+                }
+                if (chessboard[selected_square - 9].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                    possible_moves.add(selected_square - 9);
+                }
             }
 
             /* TODO: Promotion check */
@@ -76,17 +80,21 @@ public class ChessRuler {
             }
             /* Not the first move */
             else {
-                if (chessboard[selected_square + 8].isEmpty() == true){
-                    possible_moves.add(selected_square + 8);
+                if (selected_square + 8 < 64){
+                    if (chessboard[selected_square - 8].isEmpty() == true){
+                        possible_moves.add(selected_square - 8);
+                    }
                 }
             }
 
-            /* Check if can capture */
-            if (chessboard[selected_square + 7].getPiece().getPieceType() != ChessPiece.pieces_number.none){
-                possible_moves.add(selected_square + 7);
-            }
-            if (chessboard[selected_square + 9].getPiece().getPieceType() != ChessPiece.pieces_number.none){
-                possible_moves.add(selected_square + 9);
+            if (selected_square < 56) {
+                /* Check if can capture */
+                if (chessboard[selected_square + 7].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                    possible_moves.add(selected_square + 7);
+                }
+                if (chessboard[selected_square + 9].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                    possible_moves.add(selected_square + 9);
+                }
             }
 
             /* TODO: Promotion check */
