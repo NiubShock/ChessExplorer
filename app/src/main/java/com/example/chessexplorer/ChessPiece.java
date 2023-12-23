@@ -21,8 +21,14 @@ public class ChessPiece {
         king
     }
 
+    enum chess_colors{
+        white,
+        black
+    }
+
     private Bitmap          bmp;
     private int             square_number;
+    private chess_colors    color;
     private pieces_number   piece_type;
     private Rect            rect_size;
 
@@ -41,12 +47,23 @@ public class ChessPiece {
         bmp = bmp_new;
     }
 
+    public void loadColor(chess_colors color_init){
+        color = color_init;
+    }
+
     public int getSquareNumber(){
         return square_number;
     }
 
     public pieces_number getPieceType(){
         return piece_type;
+    }
+
+    public void loadPieceType(pieces_number piece_type_new){
+        piece_type = piece_type_new;
+    }
+    public chess_colors getColor(){
+        return color;
     }
 
     public void drawPiece(Canvas canvas, Rect rect_dst){

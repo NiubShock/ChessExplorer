@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.text.SpanWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -52,6 +53,8 @@ public class Chessboard extends View {
     Paint paint = new Paint();
 
     ChessboardSquare[] chessboardSquare;
+    ChessRuler          chessRuler;
+    int [] possible_moves;
 
     public Chessboard (Context context, View v) {
         super(context);
@@ -80,6 +83,9 @@ public class Chessboard extends View {
         /* Load the coordinates */
         loadCoordinates();
 
+        /* Initialize the ruler */
+        chessRuler = new ChessRuler(chessboardSquare);
+
     }
 
     /* This function loads the coordinates of the rectangles in an array */
@@ -107,9 +113,9 @@ public class Chessboard extends View {
                 /* Prepare the color of the square */
                 /* ------------------------------- */
                 if ((i+j) % 2 == 0){
-                    color = Color.LTGRAY;
+                    color = 0xFFEEEED2;
                 } else {
-                    color = Color.DKGRAY;
+                    color = 0xFF769656;
                 }
                 /* ------------------------------------------------------------------------------ */
 
@@ -131,48 +137,84 @@ public class Chessboard extends View {
             Bitmap bmp = BitmapFactory.decodeResource(getResources(), drawable.black_pawn);
             for (int i = 0; i < 8; i++) {
                 chessboardSquare[8 + i].loadNewBmp(bmp);
+                chessboardSquare[8 + i].loadPieceColor(ChessPiece.chess_colors.black);
+                chessboardSquare[8 + i].loadPieceType(ChessPiece.pieces_number.pawn);
             }
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.black_rook);
             chessboardSquare[0].loadNewBmp(bmp);
+            chessboardSquare[0].loadPieceColor(ChessPiece.chess_colors.black);
+            chessboardSquare[0].loadPieceType(ChessPiece.pieces_number.rook);
             chessboardSquare[7].loadNewBmp(bmp);
+            chessboardSquare[7].loadPieceColor(ChessPiece.chess_colors.black);
+            chessboardSquare[7].loadPieceType(ChessPiece.pieces_number.rook);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.black_knight);
             chessboardSquare[1].loadNewBmp(bmp);
+            chessboardSquare[1].loadPieceColor(ChessPiece.chess_colors.black);
+            chessboardSquare[1].loadPieceType(ChessPiece.pieces_number.knight);
             chessboardSquare[6].loadNewBmp(bmp);
+            chessboardSquare[6].loadPieceColor(ChessPiece.chess_colors.black);
+            chessboardSquare[6].loadPieceType(ChessPiece.pieces_number.knight);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.black_bishop);
             chessboardSquare[2].loadNewBmp(bmp);
+            chessboardSquare[2].loadPieceColor(ChessPiece.chess_colors.black);
+            chessboardSquare[2].loadPieceType(ChessPiece.pieces_number.bishop);
             chessboardSquare[5].loadNewBmp(bmp);
+            chessboardSquare[5].loadPieceColor(ChessPiece.chess_colors.black);
+            chessboardSquare[5].loadPieceType(ChessPiece.pieces_number.bishop);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.black_queen);
             chessboardSquare[3].loadNewBmp(bmp);
+            chessboardSquare[3].loadPieceColor(ChessPiece.chess_colors.black);
+            chessboardSquare[3].loadPieceType(ChessPiece.pieces_number.queen);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.black_king);
             chessboardSquare[4].loadNewBmp(bmp);
+            chessboardSquare[4].loadPieceColor(ChessPiece.chess_colors.black);
+            chessboardSquare[4].loadPieceType(ChessPiece.pieces_number.king);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.white_pawn);
             for (int i = 0; i < 8; i++) {
                 chessboardSquare[48 + i].loadNewBmp(bmp);
+                chessboardSquare[48 + i].loadPieceColor(ChessPiece.chess_colors.white);
+                chessboardSquare[48 + i].loadPieceType(ChessPiece.pieces_number.pawn);
             }
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.white_rook);
             chessboardSquare[56].loadNewBmp(bmp);
+            chessboardSquare[56].loadPieceColor(ChessPiece.chess_colors.white);
+            chessboardSquare[56].loadPieceType(ChessPiece.pieces_number.rook);
             chessboardSquare[61].loadNewBmp(bmp);
+            chessboardSquare[61].loadPieceColor(ChessPiece.chess_colors.white);
+            chessboardSquare[61].loadPieceType(ChessPiece.pieces_number.rook);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.white_knight);
             chessboardSquare[57].loadNewBmp(bmp);
+            chessboardSquare[57].loadPieceColor(ChessPiece.chess_colors.white);
+            chessboardSquare[57].loadPieceType(ChessPiece.pieces_number.knight);
             chessboardSquare[62].loadNewBmp(bmp);
+            chessboardSquare[62].loadPieceColor(ChessPiece.chess_colors.white);
+            chessboardSquare[62].loadPieceType(ChessPiece.pieces_number.knight);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.white_bishop);
             chessboardSquare[58].loadNewBmp(bmp);
+            chessboardSquare[58].loadPieceColor(ChessPiece.chess_colors.white);
+            chessboardSquare[0].loadPieceType(ChessPiece.pieces_number.bishop);
             chessboardSquare[63].loadNewBmp(bmp);
+            chessboardSquare[63].loadPieceColor(ChessPiece.chess_colors.white);
+            chessboardSquare[0].loadPieceType(ChessPiece.pieces_number.bishop);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.white_queen);
             chessboardSquare[59].loadNewBmp(bmp);
+            chessboardSquare[59].loadPieceColor(ChessPiece.chess_colors.white);
+            chessboardSquare[0].loadPieceType(ChessPiece.pieces_number.queen);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.white_king);
             chessboardSquare[60].loadNewBmp(bmp);
+            chessboardSquare[60].loadPieceColor(ChessPiece.chess_colors.white);
+            chessboardSquare[0].loadPieceType(ChessPiece.pieces_number.king);
         }
         /* -------------------------------------------------------------------------------------- */
     }
@@ -196,11 +238,54 @@ public class Chessboard extends View {
 
         if (highlight_square[0] >= 0){
             chessboardSquare[highlight_square[0]].highlightSquare(canvas);
-        }
 
-        if (highlight_square[1] >= 0 && new_move == true) {
-            chessboardSquare[highlight_square[1]].highlightSquare(canvas);
+            possible_moves = chessRuler.getPossibleMoves(highlight_square[0]);
+
+            /* Check if the result is valid -> Return -1 if no piece selected */
+            if (possible_moves[0] > 0) {
+                for (int i = 0; i < possible_moves.length; i++) {
+                    chessboardSquare[possible_moves[i]].drawOval(canvas);
+                }
+            }
         }
+        /* -------------------------------------------------------------------------------------- */
+
+        /* Second move received */
+        /* -------------------- */
+        if (highlight_square[1] >= 0 && new_move == true) {
+
+            boolean move_found = false;
+
+            /* Check if the move was legal */
+            for (int i = 0; i < possible_moves.length; i++){
+                if (possible_moves[i] == highlight_square[1]){
+                    chessboardSquare[highlight_square[1]].highlightSquare(canvas);
+                    move_found = true;
+                }
+            }
+
+            /* Made an illegal move, reset moves */
+            if (move_found == false){
+                starting_point = true;
+
+                /* Render again without the previous overlay */
+                freeLastMove();
+                postInvalidate();
+            }
+            /* The move was legal */
+            else {
+                chessboardSquare[highlight_square[1]].loadPiece(chessboardSquare[highlight_square[0]].getPiece());
+                chessboardSquare[highlight_square[1]].drawSquare(canvas);
+
+                chessboardSquare[highlight_square[0]].emptyPiece();
+                chessboardSquare[highlight_square[0]].drawSquare(canvas);
+
+                /* Remove the ovals */
+                freeLastMove();
+                postInvalidate();
+            }
+        }
+        /* -------------------------------------------------------------------------------------- */
 
         if (new_move == true){
             new_move = false;
@@ -225,6 +310,13 @@ public class Chessboard extends View {
         postInvalidate();
 
         return super.onTouchEvent(event);
+    }
+
+    private void freeLastMove(){
+        move_x_start = -1;
+        move_y_start = -1;
+        move_y_end = -1;
+        move_x_end = -1;
     }
 
     private int[] getSquareClicked(){

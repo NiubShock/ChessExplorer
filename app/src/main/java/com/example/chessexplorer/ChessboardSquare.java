@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 
 public class ChessboardSquare {
     private int         color;
@@ -15,6 +16,7 @@ public class ChessboardSquare {
 
     private Paint       paint;
     private Rect        rect_position;
+    private RectF       rect_f_position;
 
     public ChessboardSquare(int color_init, ChessPiece piece_init, int square_number_init,
                             Rect rect_size_init){
@@ -42,8 +44,21 @@ public class ChessboardSquare {
     }
 
     public void highlightSquare(Canvas canvas){
-        paint.setColor(Color.argb(50, 255, 0, 0));
+        paint.setColor(Color.argb(50, 255, 255, 0));
         canvas.drawRect(rect_position, paint);
+    }
+
+    public void drawOval(Canvas canvas){
+        paint.setColor(Color.argb(100,0,0,0));
+
+        rect_f_position = new RectF(rect_position);
+
+        rect_f_position.top = rect_f_position.top + (float) rect_size.height() /4;
+        rect_f_position.left = rect_f_position.left + (float) rect_size.width() /4;
+        rect_f_position.bottom = rect_f_position.bottom - (float) rect_size.height() /4;
+        rect_f_position.right = rect_f_position.right - (float) rect_size.height() /4;
+
+        canvas.drawOval(rect_f_position, paint);
     }
 
     public void loadNewBmp(Bitmap bmp){
@@ -54,4 +69,29 @@ public class ChessboardSquare {
         return rect_position;
     }
 
+    public ChessPiece.pieces_number getPieceType(){
+        return piece.getPieceType();
+    }
+
+    public ChessPiece getPiece(){
+        return piece;
+    }
+
+    public void loadPiece(ChessPiece piece_new){
+        piece = piece_new;
+    }
+
+    public void emptyPiece(){
+        /* Load the data, not the Bitmap */
+        Bitmap bmp = Bitmap.createBitmap(rect_size.width(), rect_size.height(), Bitmap.Config.ARGB_8888);
+
+        piece = new ChessPiece(bmp, square_number, ChessPiece.pieces_number.none, rect_size);
+    }
+    public void loadPieceType(ChessPiece.pieces_number piece_type_new){
+        piece.loadPieceType(piece_type_new);
+    }
+
+    public void loadPieceColor(ChessPiece.chess_colors color_init){
+        piece.loadColor(color_init);
+    }
 }
