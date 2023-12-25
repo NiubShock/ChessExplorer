@@ -19,7 +19,7 @@ public class ChessRuler {
             case rook:
                 return (checkRook(selected_square));
             case knight:
-                break;
+                return (checkKnight(selected_square));
             case bishop:
                 break;
             case queen:
@@ -114,6 +114,7 @@ public class ChessRuler {
         do{
             square_counter = square_counter + 8;
 
+            /* Check if out of range */
             if (square_counter < 64) {
                 /* Collision with another piece */
                 if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
@@ -124,6 +125,7 @@ public class ChessRuler {
                         possible_moves.add(square_counter);
                     }
                 }
+                /* Only movement available */
                 else {
                     possible_moves.add(square_counter);
                 }
@@ -140,6 +142,7 @@ public class ChessRuler {
         do{
             square_counter = square_counter - 8;
 
+            /* Check if out range */
             if (square_counter > 0) {
                 /* Collision with another piece */
                 if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
@@ -150,6 +153,7 @@ public class ChessRuler {
                         possible_moves.add(square_counter);
                     }
                 }
+                /* Movement available */
                 else {
                     possible_moves.add(square_counter);
                 }
@@ -166,8 +170,10 @@ public class ChessRuler {
         do{
             square_counter = square_counter + 1;
 
+            /* Calculate the limit on the horizontal */
             int limit = (selected_sqare - selected_sqare % 8) + 8;
 
+            /* Check if out of limit */
             if (square_counter < limit) {
                 /* Collision with another piece */
                 if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
@@ -178,6 +184,7 @@ public class ChessRuler {
                         possible_moves.add(square_counter);
                     }
                 }
+                /* Movement available */
                 else {
                     possible_moves.add(square_counter);
                 }
@@ -194,8 +201,10 @@ public class ChessRuler {
         do{
             square_counter = square_counter - 1;
 
+            /* Check the horizontal limit */
             int limit = (selected_sqare - selected_sqare % 8);
 
+            /* Check if out of range */
             if (square_counter > limit) {
                 /* Collision with another piece */
                 if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
@@ -206,6 +215,7 @@ public class ChessRuler {
                         possible_moves.add(square_counter);
                     }
                 }
+                /* Movement available */
                 else {
                     possible_moves.add(square_counter);
                 }
@@ -218,6 +228,149 @@ public class ChessRuler {
         return possible_moves;
     }
 
+    private ArrayList<Integer> checkKnight(int selected_square){
+        ArrayList<Integer> possible_moves = new ArrayList<>();
+        int move_square;
+        int limit;
+
+        /* Check the low two moves */
+        /* ----------------------- */
+
+        move_square = selected_square + 16 - 1;
+        limit = selected_square - selected_square % 8 + 16;
+
+        if (move_square > limit && (move_square >= 0 && move_square <= 63)) {
+            /* Empty move */
+            if (chessboard[move_square].getPiece().getPieceType() == ChessPiece.pieces_number.none) {
+                possible_moves.add(move_square);
+            }
+            /* Capture piece */
+            else if (chessboard[move_square].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
+                possible_moves.add(move_square);
+            }
+        }
+
+        move_square = selected_square + 16 + 1;
+        limit = selected_square - selected_square % 8 + 16 + 7;
+
+        if (move_square <= limit && (move_square >= 0 && move_square <= 63)) {
+            /* Empty move */
+            if (chessboard[move_square].getPiece().getPieceType() == ChessPiece.pieces_number.none) {
+                possible_moves.add(move_square);
+            }
+            /* Capture piece */
+            else if (chessboard[move_square].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
+                possible_moves.add(move_square);
+            }
+        }
+
+        /* Check the low two moves */
+        /* -------------=--------- */
+
+        move_square = selected_square - 16 - 1;
+        limit = selected_square - selected_square % 8 - 16;
+
+        if (move_square >= limit && (move_square >= 0 && move_square <= 63)) {
+            /* Empty move */
+            if (chessboard[move_square].getPiece().getPieceType() == ChessPiece.pieces_number.none) {
+                possible_moves.add(move_square);
+            }
+            /* Capture piece */
+            else if (chessboard[move_square].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
+                possible_moves.add(move_square);
+            }
+        }
+
+        move_square = selected_square - 16 + 1;
+        limit = selected_square - selected_square % 8 - 16 + 7;
+
+        if (move_square <= limit && (move_square >= 0 && move_square <= 63)) {
+            /* Empty move */
+            if (chessboard[move_square].getPiece().getPieceType() == ChessPiece.pieces_number.none) {
+                possible_moves.add(move_square);
+            }
+            /* Capture piece */
+            else if (chessboard[move_square].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
+                possible_moves.add(move_square);
+            }
+        }
+
+        /* Check the left two moves */
+        /* ------------------------ */
+
+        move_square = selected_square - 2 + 8;
+        limit = selected_square - selected_square % 8 + 8;
+
+        if (move_square >= limit && (move_square >= 0 && move_square <= 63)) {
+            /* Empty move */
+            if (chessboard[move_square].getPiece().getPieceType() == ChessPiece.pieces_number.none) {
+                possible_moves.add(move_square);
+            }
+            /* Capture piece */
+            else if (chessboard[move_square].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
+                possible_moves.add(move_square);
+            }
+        }
+
+        move_square = selected_square - 2 - 8;
+        limit = selected_square - selected_square % 8 - 8;
+
+        if (move_square >= limit && (move_square >= 0 && move_square <= 63)) {
+            /* Empty move */
+            if (chessboard[move_square].getPiece().getPieceType() == ChessPiece.pieces_number.none) {
+                possible_moves.add(move_square);
+            }
+            /* Capture piece */
+            else if (chessboard[move_square].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
+                possible_moves.add(move_square);
+            }
+        }
+
+        /* Check the right two moves */
+        /* ------------------------- */
+
+        move_square = selected_square + 2 + 8;
+        limit = selected_square - selected_square % 8 + 15;
+
+        if (move_square <= limit && (move_square >= 0 && move_square <= 63)) {
+            /* Empty move */
+            if (chessboard[move_square].getPiece().getPieceType() == ChessPiece.pieces_number.none) {
+                possible_moves.add(move_square);
+            }
+            /* Capture piece */
+            else if (chessboard[move_square].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
+                possible_moves.add(move_square);
+            }
+        }
+
+        move_square = selected_square + 2 - 8;
+        limit =  selected_square - selected_square % 8 - 1;
+
+        if (move_square <= limit && (move_square >= 0 && move_square <= 63)) {
+            /* Empty move */
+            if (chessboard[move_square].getPiece().getPieceType() == ChessPiece.pieces_number.none) {
+                possible_moves.add(move_square);
+            }
+            /* Capture piece */
+            else if (chessboard[move_square].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
+                possible_moves.add(move_square);
+            }
+        }
+
+        return possible_moves;
+    }
+
+//    private ArrayList<Integer> checkBishop(int selected_square){
+//
+//    }
+//
+//    private ArrayList<Integer> checkQueen(int selected_square){
+//
+//    }
+//
+//    private ArrayList<Integer> CheckKing(int selected_square){
+//
+//    }
     public void updateChessboard(ChessboardSquare[] new_chessboard){
         chessboard = new_chessboard;
     }
