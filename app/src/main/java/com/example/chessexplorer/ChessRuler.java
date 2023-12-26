@@ -380,34 +380,40 @@ public class ChessRuler {
 
         boolean stop_search = false;
         int     square_counter = selected_square;
-        
-        /* Must check on the vertical direction as long as there's no pieces, both direction */
-        do{
-            square_counter = square_counter + 1;
 
-            /* Calculate the limit on the horizontal */
-            int limit = (selected_square - selected_square % 8) + 8;
+        /* Check if the selected square is the last row */
+        if ((selected_square + 1) % 8 == 0){
+            stop_search = true;
+        }
+        else {
+            /* Must check on the vertical direction as long as there's no pieces, both direction */
+            do{
+                square_counter = square_counter + 1;
 
-            /* Check if out of limit */
-            if (square_counter < limit) {
-                /* Collision with another piece */
-                if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
-                    stop_search = true;
+                /* Calculate the limit on the horizontal */
+                int limit = (selected_square - selected_square % 8) + 8;
 
-                    /* Check if it is a capture */
-                    if (chessboard[selected_square].getPiece().getColor() != chessboard[square_counter].getPiece().getColor()) {
+                /* Check if out of limit */
+                if (square_counter < limit) {
+                    /* Collision with another piece */
+                    if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                        stop_search = true;
+
+                        /* Check if it is a capture */
+                        if (chessboard[selected_square].getPiece().getColor() != chessboard[square_counter].getPiece().getColor()) {
+                            possible_moves.add(square_counter);
+                        }
+                    }
+                    /* Movement available */
+                    else {
                         possible_moves.add(square_counter);
                     }
                 }
-                /* Movement available */
-                else {
-                    possible_moves.add(square_counter);
+                else{
+                    stop_search = true;
                 }
-            }
-            else{
-                stop_search = true;
-            }
-        }while(stop_search == false);
+            }while(stop_search == false);
+        }
         
         return possible_moves;
     }
@@ -418,33 +424,39 @@ public class ChessRuler {
         boolean stop_search = false;
         int     square_counter = selected_square;
 
-        /* Must check on the vertical direction as long as there's no pieces, both direction */
-        do{
-            square_counter = square_counter + 1 + 8;
+        if ((selected_square + 1) % 8 != 0){
+            /* Must check on the vertical direction as long as there's no pieces, both direction */
+            do{
+                square_counter = square_counter + 1 + 8;
 
-            /* Calculate the limit on the horizontal */
-            int limit = (selected_square - selected_square % 8) + 8 + 8;
+                /* Calculate the limit on the horizontal */
+                int limit = (square_counter - square_counter % 8) + 7;
 
-            /* Check if out of limit */
-            if (square_counter < limit && square_counter < 64) {
-                /* Collision with another piece */
-                if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
-                    stop_search = true;
+                /* Check if out of limit */
+                if (square_counter <= limit && square_counter < 64) {
+                    /* Collision with another piece */
+                    if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                        stop_search = true;
 
-                    /* Check if it is a capture */
-                    if (chessboard[selected_square].getPiece().getColor() != chessboard[square_counter].getPiece().getColor()) {
+                        /* Check if it is a capture */
+                        if (chessboard[selected_square].getPiece().getColor() != chessboard[square_counter].getPiece().getColor()) {
+                            possible_moves.add(square_counter);
+                        }
+                    }
+                    /* Movement available */
+                    else {
                         possible_moves.add(square_counter);
                     }
+
+                    if (square_counter == limit){
+                        stop_search = true;
+                    }
                 }
-                /* Movement available */
-                else {
-                    possible_moves.add(square_counter);
+                else{
+                    stop_search = true;
                 }
-            }
-            else{
-                stop_search = true;
-            }
-        }while(stop_search == false);
+            }while(stop_search == false);
+        }
 
         return possible_moves;
     }
@@ -455,33 +467,39 @@ public class ChessRuler {
         boolean stop_search = false;
         int     square_counter = selected_square;
 
-        /* Must check on the vertical direction as long as there's no pieces, both direction */
-        do{
-            square_counter = square_counter - 1 + 8;
+        if (selected_square % 8 != 0){
+            /* Must check on the vertical direction as long as there's no pieces, both direction */
+            do{
+                square_counter = square_counter - 1 + 8;
 
-            /* Calculate the limit on the horizontal */
-            int limit = (selected_square - selected_square % 8) + 8 + 8;
+                /* Calculate the limit on the horizontal */
+                int limit = (square_counter - square_counter % 8);
 
-            /* Check if out of limit */
-            if (square_counter < limit && square_counter < 64) {
-                /* Collision with another piece */
-                if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
-                    stop_search = true;
+                /* Check if out of limit */
+                if (square_counter >= limit && square_counter < 64) {
+                    /* Collision with another piece */
+                    if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                        stop_search = true;
 
-                    /* Check if it is a capture */
-                    if (chessboard[selected_square].getPiece().getColor() != chessboard[square_counter].getPiece().getColor()) {
+                        /* Check if it is a capture */
+                        if (chessboard[selected_square].getPiece().getColor() != chessboard[square_counter].getPiece().getColor()) {
+                            possible_moves.add(square_counter);
+                        }
+                    }
+                    /* Movement available */
+                    else {
                         possible_moves.add(square_counter);
                     }
+
+                    if (square_counter == limit){
+                        stop_search = true;
+                    }
                 }
-                /* Movement available */
-                else {
-                    possible_moves.add(square_counter);
+                else{
+                    stop_search = true;
                 }
-            }
-            else{
-                stop_search = true;
-            }
-        }while(stop_search == false);
+            }while(stop_search == false);
+        }
 
         return possible_moves;
     }
@@ -492,34 +510,39 @@ public class ChessRuler {
         boolean stop_search = false;
         int     square_counter = selected_square;
 
-        /* Must check on the vertical direction as long as there's no pieces, both direction */
-        do{
-            square_counter = square_counter + 1 - 8;
+        /* Check if the selected square is the last row */
+        if ((selected_square + 1) % 8 != 0) {
+            /* Must check on the vertical direction as long as there's no pieces, both direction */
+            do {
+                square_counter = square_counter + 1 - 8;
 
-            /* Calculate the limit on the horizontal */
-            int limit = (selected_square - selected_square % 8) + 8 + 8;
+                /* Calculate the limit on the horizontal */
+                int limit = (square_counter - square_counter % 8) + 7;
 
-            /* Check if out of limit */
-            if (square_counter < limit && square_counter >= 0) {
-                /* Collision with another piece */
-                if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
-                    stop_search = true;
+                /* Check if out of limit */
+                if (square_counter <= limit && square_counter >= 0) {
+                    /* Collision with another piece */
+                    if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                        stop_search = true;
 
-                    /* Check if it is a capture */
-                    if (chessboard[selected_square].getPiece().getColor() != chessboard[square_counter].getPiece().getColor()) {
+                        /* Check if it is a capture */
+                        if (chessboard[selected_square].getPiece().getColor() != chessboard[square_counter].getPiece().getColor()) {
+                            possible_moves.add(square_counter);
+                        }
+                    }
+                    /* Movement available */
+                    else {
                         possible_moves.add(square_counter);
                     }
-                }
-                /* Movement available */
-                else {
-                    possible_moves.add(square_counter);
-                }
-            }
-            else{
-                stop_search = true;
-            }
-        }while(stop_search == false);
 
+                    if (square_counter == limit) {
+                        stop_search = true;
+                    }
+                } else {
+                    stop_search = true;
+                }
+            } while (stop_search == false);
+        }
         return possible_moves;
     }
 
@@ -529,33 +552,39 @@ public class ChessRuler {
         boolean stop_search = false;
         int     square_counter = selected_square;
 
-        /* Must check on the vertical direction as long as there's no pieces, both direction */
-        do{
-            square_counter = square_counter - 1 - 8;
+        if (selected_square % 8 != 0){
+            /* Must check on the vertical direction as long as there's no pieces, both direction */
+            do{
+                square_counter = square_counter - 1 - 8;
 
-            /* Calculate the limit on the horizontal */
-            int limit = (selected_square - selected_square % 8) + 8 + 8;
+                /* Calculate the limit on the horizontal */
+                int limit = (square_counter - square_counter % 8);
 
-            /* Check if out of limit */
-            if (square_counter < limit && square_counter >= 0) {
-                /* Collision with another piece */
-                if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
-                    stop_search = true;
+                /* Check if out of limit */
+                if (square_counter >= limit && square_counter >= 0) {
+                    /* Collision with another piece */
+                    if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                        stop_search = true;
 
-                    /* Check if it is a capture */
-                    if (chessboard[selected_square].getPiece().getColor() != chessboard[square_counter].getPiece().getColor()) {
+                        /* Check if it is a capture */
+                        if (chessboard[selected_square].getPiece().getColor() != chessboard[square_counter].getPiece().getColor()) {
+                            possible_moves.add(square_counter);
+                        }
+                    }
+                    /* Movement available */
+                    else {
                         possible_moves.add(square_counter);
                     }
+
+                    if (square_counter == limit){
+                        stop_search = true;
+                    }
                 }
-                /* Movement available */
-                else {
-                    possible_moves.add(square_counter);
+                else{
+                    stop_search = true;
                 }
-            }
-            else{
-                stop_search = true;
-            }
-        }while(stop_search == false);
+            }while(stop_search == false);
+        }
 
         return possible_moves;
     }
