@@ -24,7 +24,7 @@ public class ChessRuler {
             case bishop:
                 return (checkBishop(selected_square));
             case queen:
-                break;
+                return (checkQueen(selected_square));
             case king:
                 break;
             case none:
@@ -259,10 +259,22 @@ public class ChessRuler {
         return possible_moves;
     }
 
-//    private ArrayList<Integer> checkQueen(int selected_square){
-//
-//    }
-//
+    private ArrayList<Integer> checkQueen(int selected_square){
+        ArrayList<Integer> possible_moves = new ArrayList<>();
+
+        possible_moves.addAll(checkUP(selected_square));
+        possible_moves.addAll(checkDOWN(selected_square));
+        possible_moves.addAll(checkLEFT(selected_square));
+        possible_moves.addAll(checkRIGHT(selected_square));
+
+        possible_moves.addAll(checkNO(selected_square));
+        possible_moves.addAll(checkNE(selected_square));
+        possible_moves.addAll(checkSO(selected_square));
+        possible_moves.addAll(checkSE(selected_square));
+
+        return possible_moves;
+    }
+
 //    private ArrayList<Integer> CheckKing(int selected_square){
 //
 //    }
@@ -351,7 +363,7 @@ public class ChessRuler {
             int limit = (selected_square - selected_square % 8);
 
             /* Check if out of range */
-            if (square_counter > limit) {
+            if (square_counter >= limit) {
                 /* Collision with another piece */
                 if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
                     stop_search = true;
