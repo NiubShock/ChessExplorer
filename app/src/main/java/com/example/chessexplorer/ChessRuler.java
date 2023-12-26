@@ -26,7 +26,7 @@ public class ChessRuler {
             case queen:
                 return (checkQueen(selected_square));
             case king:
-                break;
+                return (checkKing(selected_square));
             case none:
                 return possible_moves;
         }
@@ -275,9 +275,117 @@ public class ChessRuler {
         return possible_moves;
     }
 
-//    private ArrayList<Integer> CheckKing(int selected_square){
-//
-//    }
+    private ArrayList<Integer> checkKing(int selected_square){
+        ArrayList<Integer> possible_moves = new ArrayList<>();
+
+        int square_counter;
+        int limit;
+
+        limit = selected_square - selected_square % 8 + 8;
+
+        square_counter = selected_square + 8 - 1;
+        if (square_counter <= 63 && square_counter >= limit){
+            /* Movement */
+            if (chessboard[square_counter].isEmpty()){
+                possible_moves.add(square_counter);
+            }
+            /* Capture */
+            else if (chessboard[square_counter].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()){
+                possible_moves.add(square_counter);
+            }
+        }
+
+        square_counter = selected_square + 8;
+        if (square_counter <= 63){
+            /* Movement */
+            if (chessboard[square_counter].isEmpty()){
+                possible_moves.add(square_counter);
+            }
+            /* Capture */
+            else if (chessboard[square_counter].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()){
+                possible_moves.add(square_counter);
+            }
+        }
+
+        limit = selected_square - selected_square % 8 + 8 + 8;
+        square_counter = selected_square + 8 + 1;
+        if (square_counter <= 63 && square_counter < limit){
+            /* Movement */
+            if (chessboard[square_counter].isEmpty()){
+                possible_moves.add(square_counter);
+            }
+            /* Capture */
+            else if (chessboard[square_counter].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()){
+                possible_moves.add(square_counter);
+            }
+        }
+
+        limit = selected_square - selected_square % 8 + 8;
+        square_counter = selected_square + 1;
+        if (square_counter <= 63 && square_counter < limit){
+            /* Movement */
+            if (chessboard[square_counter].isEmpty()){
+                possible_moves.add(square_counter);
+            }
+            /* Capture */
+            else if (chessboard[square_counter].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()){
+                possible_moves.add(square_counter);
+            }
+        }
+
+        limit = selected_square - selected_square % 8 - 8;
+        square_counter = selected_square - 8 - 1;
+        if (square_counter >= 0 && square_counter >= limit){
+            /* Movement */
+            if (chessboard[square_counter].isEmpty()){
+                possible_moves.add(square_counter);
+            }
+            /* Capture */
+            else if (chessboard[square_counter].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()){
+                possible_moves.add(square_counter);
+            }
+        }
+
+        square_counter = selected_square - 8;
+        if (square_counter >= 0){
+            /* Movement */
+            if (chessboard[square_counter].isEmpty()){
+                possible_moves.add(square_counter);
+            }
+            /* Capture */
+            else if (chessboard[square_counter].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()){
+                possible_moves.add(square_counter);
+            }
+        }
+
+        limit = selected_square - selected_square % 8 - 8 + 8;
+        square_counter = selected_square - 8 + 1;
+        if (square_counter >= 0 && square_counter < limit){
+            /* Movement */
+            if (chessboard[square_counter].isEmpty()){
+                possible_moves.add(square_counter);
+            }
+            /* Capture */
+            else if (chessboard[square_counter].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()){
+                possible_moves.add(square_counter);
+            }
+        }
+
+        limit = selected_square - selected_square % 8;
+        square_counter = selected_square - 1;
+        if (square_counter >= 0 && selected_square > limit){
+            /* Movement */
+            if (chessboard[square_counter].isEmpty()){
+                possible_moves.add(square_counter);
+            }
+            /* Capture */
+            else if (chessboard[square_counter].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()){
+                possible_moves.add(square_counter);
+            }
+        }
+
+        return possible_moves;
+    }
     
     private ArrayList<Integer> checkUP(int selected_square){
         ArrayList<Integer> possible_moves = new ArrayList<>();
