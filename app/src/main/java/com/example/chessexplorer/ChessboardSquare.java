@@ -48,6 +48,18 @@ public class ChessboardSquare {
         canvas.drawRect(rect_position, paint);
     }
 
+    public void moveSquarePosition(int square_position){
+        int x,y;
+
+        square_number = square_position;
+
+        x = square_number % 8;
+        y = ((square_number - x) / 8) * rect_size.width();
+        x = x * rect_size.width();
+
+        rect_position = new Rect(x, y, x + rect_size.width(), y + rect_size.height());
+    }
+
     public void drawOval(Canvas canvas){
         paint.setColor(Color.argb(100,0,0,0));
 
@@ -75,6 +87,10 @@ public class ChessboardSquare {
 
     public ChessPiece getPiece(){
         return piece;
+    }
+
+    public int getSquareNumber(){
+        return square_number;
     }
 
     public void loadPiece(ChessPiece piece_new){

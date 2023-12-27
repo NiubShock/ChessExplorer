@@ -56,18 +56,23 @@ public class ChessRuler {
                 }
             }
 
-            /* Check if it is in the last row */
+            /* Check if it is not in the last row */
             if (selected_square > 8) {
                 /* Check if can capture */
-                if (chessboard[selected_square - 7].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                if (chessboard[selected_square - 7].getPiece().getPieceType() != ChessPiece.pieces_number.none &&
+                    chessboard[selected_square - 7].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
                     possible_moves.add(selected_square - 7);
                 }
-                if (chessboard[selected_square - 9].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                if (chessboard[selected_square - 9].getPiece().getPieceType() != ChessPiece.pieces_number.none &&
+                    chessboard[selected_square - 9].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
                     possible_moves.add(selected_square - 9);
                 }
             }
-
-            /* TODO: Promotion check */
+            /* Pawn in the last row - Possible promotion */
+            else {
+                /* In case of promotion return the same square as the piece doesnt move */
+                possible_moves.add(selected_square);
+            }
         }
         else {
             /* Check if it is the first move */
@@ -91,15 +96,20 @@ public class ChessRuler {
             /* Check if it is in the last row */
             if (selected_square < 56) {
                 /* Check if can capture */
-                if (chessboard[selected_square + 7].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                if (chessboard[selected_square + 7].getPiece().getPieceType() != ChessPiece.pieces_number.none &&
+                    chessboard[selected_square + 7].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
                     possible_moves.add(selected_square + 7);
                 }
-                if (chessboard[selected_square + 9].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                if (chessboard[selected_square + 9].getPiece().getPieceType() != ChessPiece.pieces_number.none &&
+                    chessboard[selected_square + 9].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
                     possible_moves.add(selected_square + 9);
                 }
             }
-
-            /* TODO: Promotion check */
+            /* Pawn in the last row - Possible promotion */
+            else {
+                /* In case of promotion return the same square as the piece doesnt move */
+                possible_moves.add(selected_square);
+            }
         }
 
         return possible_moves;

@@ -23,6 +23,15 @@ import android.graphics.Paint;
 
 import com.example.chessexplorer.databinding.ActivityMainBinding;
 
+/*
+[ ] Pawn Promotion
+[ ] Check and Checkmate implementation
+[ ] White - Black turns
+[ ] Text view + reading etc
+[ ] Decoding of the game
+[ ] Move forward and backward button
+[ ] Database ?
+ */
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
