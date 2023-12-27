@@ -319,8 +319,8 @@ public class Chessboard extends View {
                         else {
                             /* Move the promotion vector */
                             for (int j = 0; j < 4; j++){
-                                chessSquarePromWhite[j].moveSquarePosition(highlight_square[0] - 8 * (j+1));
-                                chessSquarePromWhite[j].drawSquare(canvas);
+                                chessSquarePromBlack[j].moveSquarePosition(highlight_square[0] - 8 * (j+1));
+                                chessSquarePromBlack[j].drawSquare(canvas);
                             }
                         }
 
