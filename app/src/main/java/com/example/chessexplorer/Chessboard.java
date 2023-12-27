@@ -57,7 +57,7 @@ public class Chessboard extends View {
 
     ChessboardSquare[] chessboardSquare;
     ChessRuler          chessRuler;
-    ArrayList<Integer>  possible_moves;
+    ArrayList<ChessRuler.Chess_Move>  possible_moves;
 
     ChessboardSquare[] chessSquarePromWhite;
     ChessboardSquare[] chessSquarePromBlack;
@@ -301,10 +301,10 @@ public class Chessboard extends View {
             /* Check if the result is valid -> Return -1 if no piece selected */
             if (possible_moves.isEmpty() == false) {
                 for (int i = 0; i < possible_moves.size(); i++) {
-                    chessboardSquare[possible_moves.get(i)].drawOval(canvas);
+                    chessboardSquare[possible_moves.get(i).move_square].drawOval(canvas);
 
                     /* Check for possible promotion */
-                    if (possible_moves.get(i) == highlight_square[0]){
+                    if (possible_moves.get(i).move_square == highlight_square[0]){
 
                         possible_promo = true;
 
@@ -338,7 +338,7 @@ public class Chessboard extends View {
 
             /* Check if the move was legal */
             for (int i = 0; i < possible_moves.size(); i++){
-                if (possible_moves.get(i) == highlight_square[1]){
+                if (possible_moves.get(i).move_square == highlight_square[1]){
                     chessboardSquare[highlight_square[1]].highlightSquare(canvas);
                     move_found = true;
                 }
@@ -381,6 +381,9 @@ public class Chessboard extends View {
 
                 chessboardSquare[highlight_square[0]].emptyPiece();
                 chessboardSquare[highlight_square[0]].drawSquare(canvas);
+
+                /* Check for check and checkmate */
+
 
                 /* Remove the ovals */
                 freeLastMove();

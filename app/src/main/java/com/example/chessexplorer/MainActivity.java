@@ -24,7 +24,7 @@ import android.graphics.Paint;
 import com.example.chessexplorer.databinding.ActivityMainBinding;
 
 /*
-[ ] Pawn Promotion
+[X] Pawn Promotion
 [ ] Check and Checkmate implementation
 [ ] White - Black turns
 [ ] Text view + reading etc
