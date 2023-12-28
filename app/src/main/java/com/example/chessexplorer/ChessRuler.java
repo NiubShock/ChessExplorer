@@ -1,19 +1,17 @@
 package com.example.chessexplorer;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ChessRuler {
 
     ChessboardSquare[]      chessboard;
-    boolean                 check_detected = false;
-    ChessPiece.chess_colors color_under_check = ChessPiece.chess_colors.white;
+    boolean                 check_detected      = false;
+    ChessPiece.chess_colors color_under_check   = ChessPiece.chess_colors.white;
 
     class Chess_Move{
         int move_square;
         move_types move_type;
-    };
+    }
 
     enum move_types{
         move,
@@ -98,14 +96,14 @@ public class ChessRuler {
             /* Check if it is not in the last row */
             if (selected_square > 8) {
                 /* Check if can capture */
-                if (chessboard[selected_square - 7].getPiece().getPieceType() != ChessPiece.pieces_number.none &&
+                if (chessboard[selected_square - 7].isEmpty() == false &&
                     chessboard[selected_square - 7].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
                     Chess_Move chess_move = new Chess_Move();
                     chess_move.move_square = selected_square - 7;
                     chess_move.move_type = move_types.capture;
                     possible_moves.add(chess_move);
                 }
-                if (chessboard[selected_square - 9].getPiece().getPieceType() != ChessPiece.pieces_number.none &&
+                if (chessboard[selected_square - 9].isEmpty() == false &&
                     chessboard[selected_square - 9].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
                     Chess_Move chess_move = new Chess_Move();
                     chess_move.move_square = selected_square - 9;
@@ -154,13 +152,13 @@ public class ChessRuler {
             if (selected_square < 56) {
                 Chess_Move chess_move = new Chess_Move();
                 /* Check if can capture */
-                if (chessboard[selected_square + 7].getPiece().getPieceType() != ChessPiece.pieces_number.none &&
+                if (chessboard[selected_square + 7].isEmpty() == false &&
                     chessboard[selected_square + 7].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
                     chess_move.move_square = selected_square + 7;
                     chess_move.move_type = move_types.capture;
                     possible_moves.add(chess_move);
                 }
-                if (chessboard[selected_square + 9].getPiece().getPieceType() != ChessPiece.pieces_number.none &&
+                if (chessboard[selected_square + 9].isEmpty() == false &&
                     chessboard[selected_square + 9].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
                     chess_move.move_square = selected_square + 9;
                     chess_move.move_type = move_types.capture;
@@ -205,7 +203,7 @@ public class ChessRuler {
 
         if (move_square > limit && (move_square >= 0 && move_square <= 63)) {
             /* Empty move */
-            if (chessboard[move_square].getPiece().getPieceType() == ChessPiece.pieces_number.none) {
+            if (chessboard[move_square].isEmpty() == true) {
                 Chess_Move chess_move = new Chess_Move();
                 chess_move.move_square = move_square;
                 chess_move.move_type = move_types.move;
@@ -225,7 +223,7 @@ public class ChessRuler {
 
         if (move_square <= limit && (move_square >= 0 && move_square <= 63)) {
             /* Empty move */
-            if (chessboard[move_square].getPiece().getPieceType() == ChessPiece.pieces_number.none) {
+            if (chessboard[move_square].isEmpty() == true) {
                 Chess_Move chess_move = new Chess_Move();
                 chess_move.move_square = move_square;
                 chess_move.move_type = move_types.move;
@@ -248,7 +246,7 @@ public class ChessRuler {
 
         if (move_square >= limit && (move_square >= 0 && move_square <= 63)) {
             /* Empty move */
-            if (chessboard[move_square].getPiece().getPieceType() == ChessPiece.pieces_number.none) {
+            if (chessboard[move_square].isEmpty() == true) {
                 Chess_Move chess_move = new Chess_Move();
                 chess_move.move_square = move_square;
                 chess_move.move_type = move_types.move;
@@ -268,7 +266,7 @@ public class ChessRuler {
 
         if (move_square <= limit && (move_square >= 0 && move_square <= 63)) {
             /* Empty move */
-            if (chessboard[move_square].getPiece().getPieceType() == ChessPiece.pieces_number.none) {
+            if (chessboard[move_square].isEmpty() == true) {
                 Chess_Move chess_move = new Chess_Move();
                 chess_move.move_square = move_square;
                 chess_move.move_type = move_types.move;
@@ -291,7 +289,7 @@ public class ChessRuler {
 
         if (move_square >= limit && (move_square >= 0 && move_square <= 63)) {
             /* Empty move */
-            if (chessboard[move_square].getPiece().getPieceType() == ChessPiece.pieces_number.none) {
+            if (chessboard[move_square].isEmpty() == true) {
                 Chess_Move chess_move = new Chess_Move();
                 chess_move.move_square = move_square;
                 chess_move.move_type = move_types.move;
@@ -311,7 +309,7 @@ public class ChessRuler {
 
         if (move_square >= limit && (move_square >= 0 && move_square <= 63)) {
             /* Empty move */
-            if (chessboard[move_square].getPiece().getPieceType() == ChessPiece.pieces_number.none) {
+            if (chessboard[move_square].isEmpty() == true) {
                 Chess_Move chess_move = new Chess_Move();
                 chess_move.move_square = move_square;
                 chess_move.move_type = move_types.move;
@@ -334,7 +332,7 @@ public class ChessRuler {
 
         if (move_square <= limit && (move_square >= 0 && move_square <= 63)) {
             /* Empty move */
-            if (chessboard[move_square].getPiece().getPieceType() == ChessPiece.pieces_number.none) {
+            if (chessboard[move_square].isEmpty() == true) {
                 Chess_Move chess_move = new Chess_Move();
                 chess_move.move_square = move_square;
                 chess_move.move_type = move_types.move;
@@ -354,7 +352,7 @@ public class ChessRuler {
 
         if (move_square <= limit && (move_square >= 0 && move_square <= 63)) {
             /* Empty move */
-            if (chessboard[move_square].getPiece().getPieceType() == ChessPiece.pieces_number.none) {
+            if (chessboard[move_square].isEmpty() == true) {
                 Chess_Move chess_move = new Chess_Move();
                 chess_move.move_square = move_square;
                 chess_move.move_type = move_types.move;
@@ -572,7 +570,7 @@ public class ChessRuler {
             /* Check if out of range */
             if (square_counter < 64) {
                 /* Collision with another piece */
-                if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                if (chessboard[square_counter].isEmpty() == false) {
                     stop_search = true;
 
                     /* Check if it is a capture */
@@ -613,7 +611,7 @@ public class ChessRuler {
             /* Check if out range */
             if (square_counter > 0) {
                 /* Collision with another piece */
-                if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                if (chessboard[square_counter].isEmpty() == false) {
                     stop_search = true;
 
                     /* Check if it is a capture */
@@ -657,7 +655,7 @@ public class ChessRuler {
             /* Check if out of range */
             if (square_counter >= limit) {
                 /* Collision with another piece */
-                if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                if (chessboard[square_counter].isEmpty() == false) {
                     stop_search = true;
 
                     /* Check if it is a capture */
@@ -706,7 +704,7 @@ public class ChessRuler {
                 /* Check if out of limit */
                 if (square_counter < limit) {
                     /* Collision with another piece */
-                    if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                    if (chessboard[square_counter].isEmpty() == false) {
                         stop_search = true;
 
                         /* Check if it is a capture */
@@ -751,7 +749,7 @@ public class ChessRuler {
                 /* Check if out of limit */
                 if (square_counter <= limit && square_counter < 64) {
                     /* Collision with another piece */
-                    if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                    if (chessboard[square_counter].isEmpty() == false) {
                         stop_search = true;
 
                         /* Check if it is a capture */
@@ -800,7 +798,7 @@ public class ChessRuler {
                 /* Check if out of limit */
                 if (square_counter >= limit && square_counter < 64) {
                     /* Collision with another piece */
-                    if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                    if (chessboard[square_counter].isEmpty() == false) {
                         stop_search = true;
 
                         /* Check if it is a capture */
@@ -850,7 +848,7 @@ public class ChessRuler {
                 /* Check if out of limit */
                 if (square_counter <= limit && square_counter >= 0) {
                     /* Collision with another piece */
-                    if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                    if (chessboard[square_counter].isEmpty() == false) {
                         stop_search = true;
 
                         /* Check if it is a capture */
@@ -897,7 +895,7 @@ public class ChessRuler {
                 /* Check if out of limit */
                 if (square_counter >= limit && square_counter >= 0) {
                     /* Collision with another piece */
-                    if (chessboard[square_counter].getPiece().getPieceType() != ChessPiece.pieces_number.none) {
+                    if (chessboard[square_counter].isEmpty() == false) {
                         stop_search = true;
 
                         /* Check if it is a capture */
@@ -991,10 +989,5 @@ public class ChessRuler {
 
         /* Return the result */
         return check_detected;
-    }
-    
-    
-    public void updateChessboard(ChessboardSquare[] new_chessboard){
-        chessboard = new_chessboard;
     }
 }

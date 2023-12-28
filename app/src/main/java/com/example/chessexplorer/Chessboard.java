@@ -3,13 +3,17 @@ package com.example.chessexplorer;
 import static com.example.chessexplorer.R.*;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 
@@ -17,28 +21,28 @@ import java.util.ArrayList;
 
 public class Chessboard extends View {
 
-    float[][]       square_positions;
+    float[][]               square_positions;
 
-    float           move_x_start = -1, move_y_start = -1;
-    float           move_x_end = -1, move_y_end = -1;
+    float                   move_x_start = -1, move_y_start = -1;
+    float                   move_x_end   = -1, move_y_end   = -1;
 
-    boolean         starting_point                  = true;
-    boolean         new_move                        = false;
-    boolean         possible_promo                  = false;
-    boolean         render_req                      = false;
+    boolean                 starting_point                  = true;
+    boolean                 new_move                        = false;
+    boolean                 possible_promo                  = false;
+    boolean                 render_req                      = false;
 
-    int check_detected = -1;
-    ChessPiece.chess_colors color_to_move = ChessPiece.chess_colors.white;
-    ChessPiece.chess_colors check_color = ChessPiece.chess_colors.white;
+    int                     check_detected                  = -1;
+    ChessPiece.chess_colors color_to_move                   = ChessPiece.chess_colors.white;
+    ChessPiece.chess_colors check_color                     = ChessPiece.chess_colors.white;
 
-    Rect            rect_size;
+    Rect                    rect_size;
 
-    ChessboardSquare[] chessboardSquare;
-    ChessRuler          chessRuler;
+    ChessboardSquare[]      chessboardSquare;
+    ChessRuler              chessRuler;
     ArrayList<ChessRuler.Chess_Move>  possible_moves;
 
-    ChessboardSquare[] chessSquarePromWhite;
-    ChessboardSquare[] chessSquarePromBlack;
+    ChessboardSquare[]      chessSquarePromWhite;
+    ChessboardSquare[]      chessSquarePromBlack;
 
     public Chessboard (Context context) {
         super(context);
@@ -50,15 +54,15 @@ public class Chessboard extends View {
 
         /* Determine the dimensions of the square */
         /* -------------------------------------- */
-        float size_x_rect = 135; //(float) (this.getWidth()/8.0);
-        float size_y_rect = 135; //(float) (this.getHeight()/8.0);
+        float size_x_rect = (float) (Resources.getSystem().getDisplayMetrics().widthPixels/8.0); // 135; //(float) (this.getWidth()/8.0);
+        float size_y_rect = (float) (Resources.getSystem().getDisplayMetrics().heightPixels/8.0);// 135; //(float) (this.getHeight()/8.0);
         float square_size;
 
         if (size_x_rect < size_y_rect)  square_size = size_x_rect;
         else                            square_size = size_y_rect;
 
         /* Declare the square size */
-        rect_size = new Rect(0, 0, (int) size_x_rect, (int) size_y_rect);
+        rect_size = new Rect(0, 0, (int) square_size, (int) square_size);
         /* -------------------------------------------------------------------------------------- */
 
         /* Load the chess board */
@@ -120,7 +124,6 @@ public class Chessboard extends View {
         chessSquarePromBlack[3] = new ChessboardSquare(Color.DKGRAY, piece, 0 , rect_size);
         chessSquarePromBlack[3].getPiece().loadColor(ChessPiece.chess_colors.black);
         /* -------------------------------------------------------------------------------------- */
-
     }
 
     /* This function loads the coordinates of the rectangles in an array */
@@ -378,7 +381,6 @@ public class Chessboard extends View {
                 newTurn();
             }
         }
-
         /* -------------------------------------------------------------------------------------- */
 
         if (new_move == true){
