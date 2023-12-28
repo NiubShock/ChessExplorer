@@ -48,6 +48,11 @@ public class ChessboardSquare {
         canvas.drawRect(rect_position, paint);
     }
 
+    public void checkHighlight(Canvas canvas){
+        paint.setColor(Color.argb(50, 255, 0, 0));
+        canvas.drawRect(rect_position, paint);
+    }
+
     public void moveSquarePosition(int square_position){
         int x,y;
 

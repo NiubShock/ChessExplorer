@@ -371,6 +371,19 @@ public class Chessboard extends View {
 
                 /* Render again without the previous overlay */
                 freeLastMove();
+
+                int check_detected = 0;
+
+                if (highlight_square[0] >= 0){
+                    /* Check for check and checkmate */
+                    check_detected = checkChecks(highlight_square[0], canvas);
+                }
+
+                if (check_detected == 0 && highlight_square[1] >= 0){
+                    /* Check for check and checkmate */
+                    checkChecks(highlight_square[1], canvas);
+                }
+
                 postInvalidate();
             }
 
@@ -382,14 +395,25 @@ public class Chessboard extends View {
                 chessboardSquare[highlight_square[0]].emptyPiece();
                 chessboardSquare[highlight_square[0]].drawSquare(canvas);
 
-                /* Check for check and checkmate */
-
-
                 /* Remove the ovals */
                 freeLastMove();
+
+                int check_detected = 0;
+
+                if (highlight_square[0] >= 0){
+                    /* Check for check and checkmate */
+                    check_detected = checkChecks(highlight_square[0], canvas);
+                }
+
+                if (check_detected == 0 && highlight_square[1] >= 0){
+                    /* Check for check and checkmate */
+                    checkChecks(highlight_square[1], canvas);
+                }
+
                 postInvalidate();
             }
         }
+
         /* -------------------------------------------------------------------------------------- */
 
         if (new_move == true){
@@ -450,5 +474,31 @@ public class Chessboard extends View {
         }
 
         return result;
+    }
+
+    private int checkChecks(int selected_square, Canvas canvas){
+        /* Check if one piece can attack the enemy king */
+        for (int i = 0; i < 64; i++){
+            /* Check the pieces of the same color */
+            if (chessboardSquare[i].getPiece().getColor() == chessboardSquare[selected_square].getPiece().getColor()){
+                ArrayList<ChessRuler.Chess_Move> check_move = new ArrayList<>(chessRuler.getPossibleMoves(i));
+
+                /* Check all the moves */
+                for (int j = 0; j < check_move.size(); j++){
+                    /* Check the capture move */
+                    if (check_move.get(j).move_type == ChessRuler.move_types.capture){
+                        /* Check if attacks the king */
+                        if (chessboardSquare[check_move.get(j).move_square].getPiece().getPieceType() == ChessPiece.pieces_number.king){
+                            /* highlight the square */
+                            chessboardSquare[check_move.get(j).move_square].checkHighlight(canvas);
+//                            postInvalidate();
+                            return 1;
+                        }
+                    }
+                }
+            }
+        }
+
+        return 0;
     }
 }
