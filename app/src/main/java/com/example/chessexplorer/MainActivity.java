@@ -6,8 +6,9 @@ import com.example.chessexplorer.databinding.ActivityMainBinding;
 
 /*
 [X] Pawn Promotion
-[ ] Check and Checkmate implementation
-[ ] White - Black turns
+[X] Check implementation
+[ ] Checkmate implementation
+[X] White - Black turns
 [ ] Text view + reading etc
 [ ] Decoding of the game
 [ ] Move forward and backward button

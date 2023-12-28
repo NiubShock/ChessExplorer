@@ -162,7 +162,7 @@ public class ChessRuler {
                 }
                 if (chessboard[selected_square + 9].getPiece().getPieceType() != ChessPiece.pieces_number.none &&
                     chessboard[selected_square + 9].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
-                    chess_move.move_square = selected_square + 8;
+                    chess_move.move_square = selected_square + 9;
                     chess_move.move_type = move_types.capture;
                     possible_moves.add(chess_move);
                 }
