@@ -53,6 +53,7 @@ public class Chessboard extends View {
     boolean         render_req                      = false;
 
     int check_detected = -1;
+    ChessPiece.chess_colors color_to_move = ChessPiece.chess_colors.white;
 
     Rect            rect_size;
 
@@ -296,7 +297,10 @@ public class Chessboard extends View {
         /* --------------------------------------------------------- */
         int [] highlight_square = getSquareClicked();
 
-        if (highlight_square[0] >= 0){
+        /* Check if a move has been made and the correct color has been selected */
+        if (highlight_square[0] >= 0 &&
+            chessboardSquare[highlight_square[0]].getPiece().getColor() == color_to_move){
+
             chessboardSquare[highlight_square[0]].highlightSquare(canvas);
 
             possible_moves = chessRuler.getPossibleMoves(highlight_square[0]);
@@ -330,6 +334,9 @@ public class Chessboard extends View {
                     }
                 }
             }
+        }
+        else {
+            starting_point = true;
         }
         /* -------------------------------------------------------------------------------------- */
 
@@ -368,6 +375,8 @@ public class Chessboard extends View {
 
                     possible_promo = false;
                     chessboardSquare[highlight_square[0]].drawSquare(canvas);
+
+                    newTurn();
                 }
 
                 starting_point = true;
@@ -375,20 +384,7 @@ public class Chessboard extends View {
                 /* Render again without the previous overlay */
                 freeLastMove();
 
-//                int check_detected = 0;
-//
-//                if (highlight_square[0] >= 0){
-//                    /* Check for check and checkmate */
-//                    check_detected = checkChecks(highlight_square[0], canvas);
-//                }
-//
-//                if (check_detected == 0 && highlight_square[1] >= 0){
-//                    /* Check for check and checkmate */
-//                    checkChecks(highlight_square[1], canvas);
-//                }
-
                 render_req = true;
-//                postInvalidate();
             }
 
             /* The move was legal */
@@ -402,20 +398,9 @@ public class Chessboard extends View {
                 /* Remove the ovals */
                 freeLastMove();
 
-//                int check_detected = 0;
-//
-//                if (highlight_square[0] >= 0){
-//                    /* Check for check and checkmate */
-//                    check_detected = checkChecks(highlight_square[0], canvas);
-//                }
-//
-//                if (check_detected == 0 && highlight_square[1] >= 0){
-//                    /* Check for check and checkmate */
-//                    checkChecks(highlight_square[1], canvas);
-//                }
-
                 render_req = true;
-//                postInvalidate();
+
+                newTurn();
             }
         }
 
@@ -464,6 +449,15 @@ public class Chessboard extends View {
         postInvalidate();
 
         return super.onTouchEvent(event);
+    }
+
+    private void newTurn(){
+        if (color_to_move == ChessPiece.chess_colors.white){
+            color_to_move = ChessPiece.chess_colors.black;
+        }
+        else {
+            color_to_move = ChessPiece.chess_colors.white;
+        }
     }
 
     private void freeLastMove(){
