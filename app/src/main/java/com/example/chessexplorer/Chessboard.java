@@ -29,6 +29,7 @@ public class Chessboard extends View {
 
     int check_detected = -1;
     ChessPiece.chess_colors color_to_move = ChessPiece.chess_colors.white;
+    ChessPiece.chess_colors check_color = ChessPiece.chess_colors.white;
 
     Rect            rect_size;
 
@@ -276,7 +277,7 @@ public class Chessboard extends View {
 
             chessboardSquare[highlight_square[0]].highlightSquare(canvas);
 
-            possible_moves = chessRuler.getPossibleMoves(highlight_square[0]);
+            possible_moves = chessRuler.getPossibleMoves(highlight_square[0], true);
 
             /* Check if the result is valid -> Return -1 if no piece selected */
             if (possible_moves.isEmpty() == false) {
@@ -303,7 +304,6 @@ public class Chessboard extends View {
                                 chessSquarePromBlack[j].drawSquare(canvas);
                             }
                         }
-
                     }
                 }
             }
@@ -368,6 +368,8 @@ public class Chessboard extends View {
                 chessboardSquare[highlight_square[0]].emptyPiece();
                 chessboardSquare[highlight_square[0]].drawSquare(canvas);
 
+                chessRuler.resetCheckDetected();
+
                 /* Remove the ovals */
                 freeLastMove();
 
@@ -385,15 +387,16 @@ public class Chessboard extends View {
 
         if (highlight_square[0] >= 0){
             /* Check for check and checkmate */
-            check_detected = checkChecks(highlight_square[0], canvas);
+            check_detected = chessRuler.checkChecks(color_to_move);
         }
 
         if (check_detected == -1 && highlight_square[1] >= 0) {
             /* Check for check and checkmate */
-            check_detected = checkChecks(highlight_square[1], canvas);
+            check_detected = chessRuler.checkChecks(color_to_move);
         }
 
         if (check_detected >= 0) {
+            check_color = color_to_move;
             chessboardSquare[check_detected].checkHighlight(canvas);
         }
 
@@ -468,26 +471,5 @@ public class Chessboard extends View {
         return result;
     }
 
-    private int checkChecks(int selected_square, Canvas canvas){
-        /* Check if one piece can attack the enemy king */
-        for (int i = 0; i < 64; i++){
-            /* Check the pieces of the same color */
-            if (chessboardSquare[i].getPiece().getColor() == chessboardSquare[selected_square].getPiece().getColor()){
-                ArrayList<ChessRuler.Chess_Move> check_move = new ArrayList<>(chessRuler.getPossibleMoves(i));
 
-                /* Check all the moves */
-                for (int j = 0; j < check_move.size(); j++){
-                    /* Check the capture move */
-                    if (check_move.get(j).move_type == ChessRuler.move_types.capture){
-                        /* Check if attacks the king */
-                        if (chessboardSquare[check_move.get(j).move_square].getPiece().getPieceType() == ChessPiece.pieces_number.king){
-                            return check_move.get(j).move_square;
-                        }
-                    }
-                }
-            }
-        }
-
-        return -1;
-    }
 }
