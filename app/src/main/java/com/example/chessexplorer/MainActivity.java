@@ -1,26 +1,7 @@
 package com.example.chessexplorer;
 
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-
-
 import com.example.chessexplorer.databinding.ActivityMainBinding;
 
 /*
@@ -51,8 +32,7 @@ public class MainActivity extends AppCompatActivity {
 //                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
 //                .build();
 
-        View v = findViewById(R.id.view);
-        chessboard = new Chessboard(this, v);
+        chessboard = new Chessboard(this);
 
         setContentView(chessboard);
 

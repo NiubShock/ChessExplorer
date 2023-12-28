@@ -7,36 +7,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
-import android.text.SpanWatcher;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
-import androidx.navigation.ui.AppBarConfiguration;
-
-import com.example.chessexplorer.databinding.ActivityMainBinding;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 
 import java.util.ArrayList;
 
@@ -57,8 +32,6 @@ public class Chessboard extends View {
 
     Rect            rect_size;
 
-    Paint paint = new Paint();
-
     ChessboardSquare[] chessboardSquare;
     ChessRuler          chessRuler;
     ArrayList<ChessRuler.Chess_Move>  possible_moves;
@@ -66,7 +39,7 @@ public class Chessboard extends View {
     ChessboardSquare[] chessSquarePromWhite;
     ChessboardSquare[] chessSquarePromBlack;
 
-    public Chessboard (Context context, View v) {
+    public Chessboard (Context context) {
         super(context);
 
         /* Store the coordinates of the the squares */
@@ -508,9 +481,6 @@ public class Chessboard extends View {
                     if (check_move.get(j).move_type == ChessRuler.move_types.capture){
                         /* Check if attacks the king */
                         if (chessboardSquare[check_move.get(j).move_square].getPiece().getPieceType() == ChessPiece.pieces_number.king){
-//                            /* highlight the square */
-//                            chessboardSquare[check_move.get(j).move_square].checkHighlight(canvas);
-//                            postInvalidate();
                             return check_move.get(j).move_square;
                         }
                     }
