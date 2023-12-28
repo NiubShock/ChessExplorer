@@ -50,6 +50,9 @@ public class Chessboard extends View {
     boolean         starting_point                  = true;
     boolean         new_move                        = false;
     boolean         possible_promo                  = false;
+    boolean         render_req                      = false;
+
+    int check_detected = -1;
 
     Rect            rect_size;
 
@@ -372,19 +375,20 @@ public class Chessboard extends View {
                 /* Render again without the previous overlay */
                 freeLastMove();
 
-                int check_detected = 0;
+//                int check_detected = 0;
+//
+//                if (highlight_square[0] >= 0){
+//                    /* Check for check and checkmate */
+//                    check_detected = checkChecks(highlight_square[0], canvas);
+//                }
+//
+//                if (check_detected == 0 && highlight_square[1] >= 0){
+//                    /* Check for check and checkmate */
+//                    checkChecks(highlight_square[1], canvas);
+//                }
 
-                if (highlight_square[0] >= 0){
-                    /* Check for check and checkmate */
-                    check_detected = checkChecks(highlight_square[0], canvas);
-                }
-
-                if (check_detected == 0 && highlight_square[1] >= 0){
-                    /* Check for check and checkmate */
-                    checkChecks(highlight_square[1], canvas);
-                }
-
-                postInvalidate();
+                render_req = true;
+//                postInvalidate();
             }
 
             /* The move was legal */
@@ -398,19 +402,20 @@ public class Chessboard extends View {
                 /* Remove the ovals */
                 freeLastMove();
 
-                int check_detected = 0;
+//                int check_detected = 0;
+//
+//                if (highlight_square[0] >= 0){
+//                    /* Check for check and checkmate */
+//                    check_detected = checkChecks(highlight_square[0], canvas);
+//                }
+//
+//                if (check_detected == 0 && highlight_square[1] >= 0){
+//                    /* Check for check and checkmate */
+//                    checkChecks(highlight_square[1], canvas);
+//                }
 
-                if (highlight_square[0] >= 0){
-                    /* Check for check and checkmate */
-                    check_detected = checkChecks(highlight_square[0], canvas);
-                }
-
-                if (check_detected == 0 && highlight_square[1] >= 0){
-                    /* Check for check and checkmate */
-                    checkChecks(highlight_square[1], canvas);
-                }
-
-                postInvalidate();
+                render_req = true;
+//                postInvalidate();
             }
         }
 
@@ -419,6 +424,26 @@ public class Chessboard extends View {
         if (new_move == true){
             new_move = false;
         }
+
+        if (highlight_square[0] >= 0){
+            /* Check for check and checkmate */
+            check_detected = checkChecks(highlight_square[0], canvas);
+        }
+
+        if (check_detected == -1 && highlight_square[1] >= 0) {
+            /* Check for check and checkmate */
+            check_detected = checkChecks(highlight_square[1], canvas);
+        }
+
+        if (check_detected >= 0) {
+            chessboardSquare[check_detected].checkHighlight(canvas);
+        }
+
+        if (render_req == true) {
+            postInvalidate();
+            render_req = false;
+        }
+
         /* -------------------------------------------------------------------------------------- */
     }
 
@@ -489,16 +514,16 @@ public class Chessboard extends View {
                     if (check_move.get(j).move_type == ChessRuler.move_types.capture){
                         /* Check if attacks the king */
                         if (chessboardSquare[check_move.get(j).move_square].getPiece().getPieceType() == ChessPiece.pieces_number.king){
-                            /* highlight the square */
-                            chessboardSquare[check_move.get(j).move_square].checkHighlight(canvas);
+//                            /* highlight the square */
+//                            chessboardSquare[check_move.get(j).move_square].checkHighlight(canvas);
 //                            postInvalidate();
-                            return 1;
+                            return check_move.get(j).move_square;
                         }
                     }
                 }
             }
         }
 
-        return 0;
+        return -1;
     }
 }
