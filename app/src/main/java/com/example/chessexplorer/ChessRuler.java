@@ -22,7 +22,7 @@ public class ChessRuler {
         chessboard = chessboardSquare;
     }
 
-    public ArrayList<Chess_Move> getPossibleMoves(int selected_square, boolean check_persistence){
+    public ArrayList<Chess_Move> getPossibleMoves(int selected_square, boolean check_persistence, ChessPiece.chess_colors color_to_move){
         ArrayList<Chess_Move> possible_moves = new ArrayList<>();
         switch(chessboard[selected_square].getPieceType()){
             case pawn:
@@ -48,9 +48,9 @@ public class ChessRuler {
         boolean check_still_here = false;
 
         /* Check for checks detected previously */
-        if (check_detected == true && check_persistence == true){
+        if (/*check_detected == true && */check_persistence == true){
             for (int i = 0; i < possible_moves.size(); i++){
-                check_still_here = checkCheckPersistence(color_under_check, selected_square, possible_moves.get(i).move_square);
+                check_still_here = checkCheckPersistence(color_to_move, selected_square, possible_moves.get(i).move_square);
                 if (check_still_here == true){
                     possible_moves.remove(i);
                     i--;
@@ -176,6 +176,24 @@ public class ChessRuler {
         }
 
         return possible_moves;
+    }
+
+    public boolean checkPawnPromotion(int selected_square){
+        /* Check the color and the piece */
+        if (chessboard[selected_square].getPieceType() == ChessPiece.pieces_number.pawn){
+            if (chessboard[selected_square].getPiece().getColor() == ChessPiece.chess_colors.white){
+                if (selected_square >= 56 && selected_square <= 63){
+                    return true;
+                }
+            }
+            else {
+                if (selected_square >= 0 && selected_square <= 7){
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private ArrayList<Chess_Move> checkRook(int selected_square){
@@ -932,7 +950,7 @@ public class ChessRuler {
         for (int i = 0; i < 64; i++){
             /* Check the pieces of the same color */
             if (chessboard[i].getPiece().getColor() != color){
-                ArrayList<ChessRuler.Chess_Move> check_move = new ArrayList<>(getPossibleMoves(i, false));
+                ArrayList<ChessRuler.Chess_Move> check_move = new ArrayList<>(getPossibleMoves(i, false, color));
 
                 /* Check all the moves */
                 for (int j = 0; j < check_move.size(); j++){
@@ -967,8 +985,8 @@ public class ChessRuler {
         /* Check if one piece can attack the enemy king */
         for (int i = 0; i < 64; i++){
             /* Check the pieces of the same color */
-            if (chessboard[i].getPiece().getColor() == color){
-                ArrayList<ChessRuler.Chess_Move> check_move = new ArrayList<>(getPossibleMoves(i, false));
+            if (chessboard[i].getPiece().getColor() != color){
+                ArrayList<ChessRuler.Chess_Move> check_move = new ArrayList<>(getPossibleMoves(i, false, color));
 
                 /* Check all the moves */
                 for (int j = 0; j < check_move.size(); j++){

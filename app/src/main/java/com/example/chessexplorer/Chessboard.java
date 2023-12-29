@@ -280,34 +280,12 @@ public class Chessboard extends View {
 
             chessboardSquare[highlight_square[0]].highlightSquare(canvas);
 
-            possible_moves = chessRuler.getPossibleMoves(highlight_square[0], true);
+            possible_moves = chessRuler.getPossibleMoves(highlight_square[0], true, color_to_move);
 
             /* Check if the result is valid -> Return -1 if no piece selected */
             if (possible_moves.isEmpty() == false) {
                 for (int i = 0; i < possible_moves.size(); i++) {
                     chessboardSquare[possible_moves.get(i).move_square].drawOval(canvas);
-
-                    /* Check for possible promotion */
-                    if (possible_moves.get(i).move_square == highlight_square[0]){
-
-                        possible_promo = true;
-
-                        /* Check the color of the piece */
-                        if (chessboardSquare[highlight_square[0]].getPiece().getColor() == ChessPiece.chess_colors.white){
-                            /* Move the promotion vector */
-                            for (int j = 0; j < 4; j++){
-                                chessSquarePromWhite[j].moveSquarePosition(highlight_square[0] + 8 * (j+1));
-                                chessSquarePromWhite[j].drawSquare(canvas);
-                            }
-                        }
-                        else {
-                            /* Move the promotion vector */
-                            for (int j = 0; j < 4; j++){
-                                chessSquarePromBlack[j].moveSquarePosition(highlight_square[0] - 8 * (j+1));
-                                chessSquarePromBlack[j].drawSquare(canvas);
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -332,9 +310,44 @@ public class Chessboard extends View {
 
             /* Made an illegal move, reset moves */
             if (move_found == false){
+                starting_point = true;
 
+                /* Render again without the previous overlay */
+                freeLastMove();
+
+                render_req = true;
+            }
+
+            /* The move was legal */
+            else {
+                chessboardSquare[highlight_square[1]].loadPiece(chessboardSquare[highlight_square[0]].getPiece());
+                chessboardSquare[highlight_square[1]].drawSquare(canvas);
+
+                chessboardSquare[highlight_square[0]].emptyPiece();
+                chessboardSquare[highlight_square[0]].drawSquare(canvas);
+
+                chessRuler.resetCheckDetected();
+
+                possible_promo = chessRuler.checkPawnPromotion(highlight_square[1]);
                 /* Check if selected a promotion element */
                 if (possible_promo == true){
+
+                    /* Check the color of the piece */
+                    if (chessboardSquare[highlight_square[0]].getPiece().getColor() == ChessPiece.chess_colors.white){
+                        /* Move the promotion vector */
+                        for (int j = 0; j < 4; j++){
+                            chessSquarePromWhite[j].moveSquarePosition(highlight_square[0] + 8 * (j+1));
+                            chessSquarePromWhite[j].drawSquare(canvas);
+                        }
+                    }
+                    else {
+                        /* Move the promotion vector */
+                        for (int j = 0; j < 4; j++){
+                            chessSquarePromBlack[j].moveSquarePosition(highlight_square[0] - 8 * (j+1));
+                            chessSquarePromBlack[j].drawSquare(canvas);
+                        }
+                    }
+
                     for (int i = 0; i < 4; i++){
                         if (highlight_square[1] == chessSquarePromWhite[i].getSquareNumber()){
                             chessboardSquare[highlight_square[0]].loadPiece(chessSquarePromWhite[i].getPiece());
@@ -354,24 +367,6 @@ public class Chessboard extends View {
 
                     newTurn();
                 }
-
-                starting_point = true;
-
-                /* Render again without the previous overlay */
-                freeLastMove();
-
-                render_req = true;
-            }
-
-            /* The move was legal */
-            else {
-                chessboardSquare[highlight_square[1]].loadPiece(chessboardSquare[highlight_square[0]].getPiece());
-                chessboardSquare[highlight_square[1]].drawSquare(canvas);
-
-                chessboardSquare[highlight_square[0]].emptyPiece();
-                chessboardSquare[highlight_square[0]].drawSquare(canvas);
-
-                chessRuler.resetCheckDetected();
 
                 /* Remove the ovals */
                 freeLastMove();
