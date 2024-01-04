@@ -150,16 +150,17 @@ public class ChessRuler {
 
             /* Check if it is in the last row */
             if (selected_square < 56) {
-                Chess_Move chess_move = new Chess_Move();
                 /* Check if can capture */
                 if (chessboard[selected_square + 7].isEmpty() == false &&
                     chessboard[selected_square + 7].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
+                    Chess_Move chess_move = new Chess_Move();
                     chess_move.move_square = selected_square + 7;
                     chess_move.move_type = move_types.capture;
                     possible_moves.add(chess_move);
                 }
                 if (chessboard[selected_square + 9].isEmpty() == false &&
                     chessboard[selected_square + 9].getPiece().getColor() != chessboard[selected_square].getPiece().getColor()) {
+                    Chess_Move chess_move = new Chess_Move();
                     chess_move.move_square = selected_square + 9;
                     chess_move.move_type = move_types.capture;
                     possible_moves.add(chess_move);

@@ -26,6 +26,7 @@ public class Chessboard extends View {
         FIRST_SELECTION,
         NEW_MOVE,
         CHECK_PROMOTION,
+        DRAW_PROMOTION,
         SELECT_PROMOTION,
         CHECK_CHECKS,
         NEW_TURN
@@ -42,7 +43,7 @@ public class Chessboard extends View {
     boolean                 render_req                      = false;
 
     int                     check_detected                  = -1;
-    int                     promotion_square                = -1;
+
     ChessPiece.chess_colors color_moving                    = ChessPiece.chess_colors.white;
     ChessPiece.chess_colors color_to_move                   = ChessPiece.chess_colors.black;
     ChessPiece.chess_colors check_color                     = ChessPiece.chess_colors.white;
@@ -60,7 +61,7 @@ public class Chessboard extends View {
 
     int selected_square;
     int new_move_square;
-    int prom_selected_square;
+    int                     promotion_square                = -1;
 
     public Chessboard (Context context) {
         super(context);
@@ -277,17 +278,17 @@ public class Chessboard extends View {
 
     private void drawPromotionVector(Canvas canvas){
         /* Check the color of the piece */
-        if (chessboardSquare[promotion_square].getPiece().getColor() == ChessPiece.chess_colors.white){
+        if (chessboardSquare[new_move_square].getPiece().getColor() == ChessPiece.chess_colors.white){
             /* Move the promotion vector */
             for (int j = 0; j < 4; j++){
-                chessSquarePromWhite[j].moveSquarePosition(promotion_square + 8 + 8 * (j+1));
+                chessSquarePromWhite[j].moveSquarePosition(new_move_square + 8 * (j+1));
                 chessSquarePromWhite[j].drawSquare(canvas);
             }
         }
         else {
             /* Move the promotion vector */
             for (int j = 0; j < 4; j++){
-                chessSquarePromBlack[j].moveSquarePosition(promotion_square - 8 - 8 * (j+1));
+                chessSquarePromBlack[j].moveSquarePosition(new_move_square - 8 * (j+1));
                 chessSquarePromBlack[j].drawSquare(canvas);
             }
         }
@@ -296,15 +297,15 @@ public class Chessboard extends View {
     private void drawPromotedElement(int selected_square){
         for (int i = 0; i < 4; i++){
             if (selected_square == chessSquarePromWhite[i].getSquareNumber()){
-                chessboardSquare[promotion_square + 8].loadPiece(chessSquarePromWhite[i].getPiece());
-                chessboardSquare[promotion_square + 8].loadPieceColor(chessSquarePromWhite[i].getPiece().getColor());
-                chessboardSquare[promotion_square + 8].loadPieceType(chessSquarePromWhite[i].getPiece().getPieceType());
+                chessboardSquare[new_move_square].loadPiece(chessSquarePromWhite[i].getPiece());
+                chessboardSquare[new_move_square].loadPieceColor(chessSquarePromWhite[i].getPiece().getColor());
+                chessboardSquare[new_move_square].loadPieceType(chessSquarePromWhite[i].getPiece().getPieceType());
             }
 
             else if (selected_square == chessSquarePromBlack[i].getSquareNumber()){
-                chessboardSquare[promotion_square + 8].loadPiece(chessSquarePromBlack[i].getPiece());
-                chessboardSquare[promotion_square + 8].loadPieceColor(chessSquarePromBlack[i].getPiece().getColor());
-                chessboardSquare[promotion_square + 8].loadPieceType(chessSquarePromBlack[i].getPiece().getPieceType());
+                chessboardSquare[new_move_square].loadPiece(chessSquarePromBlack[i].getPiece());
+                chessboardSquare[new_move_square].loadPieceColor(chessSquarePromBlack[i].getPiece().getColor());
+                chessboardSquare[new_move_square].loadPieceType(chessSquarePromBlack[i].getPiece().getPieceType());
             }
         }
     }
@@ -337,6 +338,9 @@ public class Chessboard extends View {
         if (check_detected >= 0) {
             check_color = color_to_move;
             chessboardSquare[check_detected].checkHighlight(canvas);
+        }
+        if (possible_promo == true) {
+            drawPromotionVector(canvas);
         }
 
         switch(draw_semaphore){
@@ -409,11 +413,33 @@ public class Chessboard extends View {
                 break;
 
             case CHECK_PROMOTION:
-                draw_semaphore = draw_semaphore_enum.CHECK_CHECKS;
+                /* Check for promotion */
+                possible_promo = chessRuler.checkPawnPromotion(new_move_square);
+
+                /* Check if promotion exists */
+                if (possible_promo == true){
+                    draw_semaphore = draw_semaphore_enum.DRAW_PROMOTION;
+                }
+                else{
+                    draw_semaphore = draw_semaphore_enum.CHECK_CHECKS;
+                }
+
                 render_req = true;
                 break;
 
+            case DRAW_PROMOTION:
+                draw_semaphore = draw_semaphore_enum.SELECT_PROMOTION;
+                break;
+
             case SELECT_PROMOTION:
+                promotion_square = getSquareClicked();
+
+                drawPromotedElement(promotion_square);
+
+                possible_promo = false;
+                draw_semaphore = draw_semaphore_enum.CHECK_CHECKS;
+                render_req = true;
+
                 break;
 
             case CHECK_CHECKS:
@@ -426,8 +452,9 @@ public class Chessboard extends View {
 
             case NEW_TURN:
                 newTurn();
-                render_req = true;
+
                 draw_semaphore = draw_semaphore_enum.FIRST_SELECTION;
+                render_req = true;
                 break;
         }
 
