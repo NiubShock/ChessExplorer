@@ -182,12 +182,12 @@ public class ChessRuler {
         /* Check the color and the piece */
         if (chessboard[selected_square].getPieceType() == ChessPiece.pieces_number.pawn){
             if (chessboard[selected_square].getPiece().getColor() == ChessPiece.chess_colors.white){
-                if (selected_square >= 56 && selected_square <= 63){
+                if (selected_square >= 0 && selected_square <= 7){
                     return true;
                 }
             }
             else {
-                if (selected_square >= 0 && selected_square <= 7){
+                if (selected_square >= 56 && selected_square <= 63){
                     return true;
                 }
             }

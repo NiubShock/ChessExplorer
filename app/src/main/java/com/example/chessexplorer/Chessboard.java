@@ -21,18 +21,30 @@ import java.util.ArrayList;
 
 public class Chessboard extends View {
 
+    enum draw_semaphore_enum{
+        DEFAULT,
+        FIRST_SELECTION,
+        NEW_MOVE,
+        CHECK_PROMOTION,
+        SELECT_PROMOTION,
+        CHECK_CHECKS,
+        NEW_TURN
+    }
+
     float[][]               square_positions;
 
     float                   move_x_start = -1, move_y_start = -1;
-    float                   move_x_end   = -1, move_y_end   = -1;
 
     boolean                 starting_point                  = true;
     boolean                 new_move                        = false;
     boolean                 possible_promo                  = false;
+    boolean                 skip_turn                       = false;
     boolean                 render_req                      = false;
 
     int                     check_detected                  = -1;
-    ChessPiece.chess_colors color_to_move                   = ChessPiece.chess_colors.white;
+    int                     promotion_square                = -1;
+    ChessPiece.chess_colors color_moving                    = ChessPiece.chess_colors.white;
+    ChessPiece.chess_colors color_to_move                   = ChessPiece.chess_colors.black;
     ChessPiece.chess_colors check_color                     = ChessPiece.chess_colors.white;
 
     Rect                    rect_size;
@@ -43,6 +55,12 @@ public class Chessboard extends View {
 
     ChessboardSquare[]      chessSquarePromWhite;
     ChessboardSquare[]      chessSquarePromBlack;
+
+    draw_semaphore_enum draw_semaphore = draw_semaphore_enum.DEFAULT;
+
+    int selected_square;
+    int new_move_square;
+    int prom_selected_square;
 
     public Chessboard (Context context) {
         super(context);
@@ -257,10 +275,41 @@ public class Chessboard extends View {
         /* -------------------------------------------------------------------------------------- */
     }
 
-    @Override
-    protected void onDraw(@NonNull Canvas canvas){
-        super.onDraw(canvas);
+    private void drawPromotionVector(Canvas canvas){
+        /* Check the color of the piece */
+        if (chessboardSquare[promotion_square].getPiece().getColor() == ChessPiece.chess_colors.white){
+            /* Move the promotion vector */
+            for (int j = 0; j < 4; j++){
+                chessSquarePromWhite[j].moveSquarePosition(promotion_square + 8 + 8 * (j+1));
+                chessSquarePromWhite[j].drawSquare(canvas);
+            }
+        }
+        else {
+            /* Move the promotion vector */
+            for (int j = 0; j < 4; j++){
+                chessSquarePromBlack[j].moveSquarePosition(promotion_square - 8 - 8 * (j+1));
+                chessSquarePromBlack[j].drawSquare(canvas);
+            }
+        }
+    }
 
+    private void drawPromotedElement(int selected_square){
+        for (int i = 0; i < 4; i++){
+            if (selected_square == chessSquarePromWhite[i].getSquareNumber()){
+                chessboardSquare[promotion_square + 8].loadPiece(chessSquarePromWhite[i].getPiece());
+                chessboardSquare[promotion_square + 8].loadPieceColor(chessSquarePromWhite[i].getPiece().getColor());
+                chessboardSquare[promotion_square + 8].loadPieceType(chessSquarePromWhite[i].getPiece().getPieceType());
+            }
+
+            else if (selected_square == chessSquarePromBlack[i].getSquareNumber()){
+                chessboardSquare[promotion_square + 8].loadPiece(chessSquarePromBlack[i].getPiece());
+                chessboardSquare[promotion_square + 8].loadPieceColor(chessSquarePromBlack[i].getPiece().getColor());
+                chessboardSquare[promotion_square + 8].loadPieceType(chessSquarePromBlack[i].getPiece().getPieceType());
+            }
+        }
+    }
+
+    private void drawChessboard(Canvas canvas){
         /* Draw all the element in the chessboard */
         /* -------------------------------------- */
         for (int i = 0; i < 8; i ++){
@@ -268,134 +317,178 @@ public class Chessboard extends View {
                 chessboardSquare[i * 8 + j].drawSquare(canvas);
             }
         }
-        /* -------------------------------------------------------------------------------------- */
+    }
 
-        /* Highlight the selected square and show the possible moves */
-        /* --------------------------------------------------------- */
-        int [] highlight_square = getSquareClicked();
+    /*
+    [X] - Draw the chessboard and the pieces - Always
+    [ ] - Detect the selected square
+    [ ] - Show the possible moves
+    [ ] - Get the selected move
+    [ ] - Check for promotion
+    [ ] - Check for new checks
+     */
+    @Override
+    protected void onDraw(@NonNull Canvas canvas){
+        super.onDraw(canvas);
 
-        /* Check if a move has been made and the correct color has been selected */
-        if (highlight_square[0] >= 0 &&
-            chessboardSquare[highlight_square[0]].getPiece().getColor() == color_to_move){
-
-            chessboardSquare[highlight_square[0]].highlightSquare(canvas);
-
-            possible_moves = chessRuler.getPossibleMoves(highlight_square[0], true, color_to_move);
-
-            /* Check if the result is valid -> Return -1 if no piece selected */
-            if (possible_moves.isEmpty() == false) {
-                for (int i = 0; i < possible_moves.size(); i++) {
-                    chessboardSquare[possible_moves.get(i).move_square].drawOval(canvas);
-                }
-            }
-        }
-        else {
-            starting_point = true;
-        }
-        /* -------------------------------------------------------------------------------------- */
-
-        /* Second move received */
-        /* -------------------- */
-        if (highlight_square[1] >= 0 && new_move == true) {
-
-            boolean move_found = false;
-
-            /* Check if the move was legal */
-            for (int i = 0; i < possible_moves.size(); i++){
-                if (possible_moves.get(i).move_square == highlight_square[1]){
-                    chessboardSquare[highlight_square[1]].highlightSquare(canvas);
-                    move_found = true;
-                }
-            }
-
-            /* Made an illegal move, reset moves */
-            if (move_found == false){
-                starting_point = true;
-
-                /* Render again without the previous overlay */
-                freeLastMove();
-
-                render_req = true;
-            }
-
-            /* The move was legal */
-            else {
-                chessboardSquare[highlight_square[1]].loadPiece(chessboardSquare[highlight_square[0]].getPiece());
-                chessboardSquare[highlight_square[1]].drawSquare(canvas);
-
-                chessboardSquare[highlight_square[0]].emptyPiece();
-                chessboardSquare[highlight_square[0]].drawSquare(canvas);
-
-                chessRuler.resetCheckDetected();
-
-                possible_promo = chessRuler.checkPawnPromotion(highlight_square[1]);
-                /* Check if selected a promotion element */
-                if (possible_promo == true){
-
-                    /* Check the color of the piece */
-                    if (chessboardSquare[highlight_square[0]].getPiece().getColor() == ChessPiece.chess_colors.white){
-                        /* Move the promotion vector */
-                        for (int j = 0; j < 4; j++){
-                            chessSquarePromWhite[j].moveSquarePosition(highlight_square[0] + 8 * (j+1));
-                            chessSquarePromWhite[j].drawSquare(canvas);
-                        }
-                    }
-                    else {
-                        /* Move the promotion vector */
-                        for (int j = 0; j < 4; j++){
-                            chessSquarePromBlack[j].moveSquarePosition(highlight_square[0] - 8 * (j+1));
-                            chessSquarePromBlack[j].drawSquare(canvas);
-                        }
-                    }
-
-                    for (int i = 0; i < 4; i++){
-                        if (highlight_square[1] == chessSquarePromWhite[i].getSquareNumber()){
-                            chessboardSquare[highlight_square[0]].loadPiece(chessSquarePromWhite[i].getPiece());
-                            chessboardSquare[highlight_square[0]].loadPieceColor(chessSquarePromWhite[i].getPiece().getColor());
-                            chessboardSquare[highlight_square[0]].loadPieceType(chessSquarePromWhite[i].getPiece().getPieceType());
-                        }
-
-                        else if (highlight_square[1] == chessSquarePromBlack[i].getSquareNumber()){
-                            chessboardSquare[highlight_square[0]].loadPiece(chessSquarePromBlack[i].getPiece());
-                            chessboardSquare[highlight_square[0]].loadPieceColor(chessSquarePromBlack[i].getPiece().getColor());
-                            chessboardSquare[highlight_square[0]].loadPieceType(chessSquarePromBlack[i].getPiece().getPieceType());
-                        }
-                    }
-
-                    possible_promo = false;
-                    chessboardSquare[highlight_square[0]].drawSquare(canvas);
-
-                    newTurn();
-                }
-
-                /* Remove the ovals */
-                freeLastMove();
-
-                render_req = true;
-
-                newTurn();
-            }
-        }
-        /* -------------------------------------------------------------------------------------- */
-
-        if (new_move == true){
-            new_move = false;
-        }
-
-        if (highlight_square[0] >= 0){
-            /* Check for check and checkmate */
-            check_detected = chessRuler.checkChecks(color_to_move);
-        }
-
-        if (check_detected == -1 && highlight_square[1] >= 0) {
-            /* Check for check and checkmate */
-            check_detected = chessRuler.checkChecks(color_to_move);
-        }
-
+        /* Draw all the element in the chessboard */
+        /* -------------------------------------- */
+        drawChessboard(canvas);
         if (check_detected >= 0) {
             check_color = color_to_move;
             chessboardSquare[check_detected].checkHighlight(canvas);
         }
+
+        switch(draw_semaphore){
+            case DEFAULT:
+                draw_semaphore = draw_semaphore_enum.FIRST_SELECTION;
+                break;
+
+            case FIRST_SELECTION:
+                /* Highlight the selected square and show the possible moves */
+                /* --------------------------------------------------------- */
+                selected_square = getSquareClicked();
+
+                /* Check if a move has been made and the correct color has been selected */
+                if (selected_square >= 0 && chessboardSquare[selected_square].getPiece().getColor() == color_moving){
+
+                    chessboardSquare[selected_square].highlightSquare(canvas);
+
+                    possible_moves = chessRuler.getPossibleMoves(selected_square, true, color_moving);
+
+                    /* Check if the result is valid -> Return -1 if no piece selected */
+                    if (possible_moves.isEmpty() == false) {
+                        for (int i = 0; i < possible_moves.size(); i++) {
+                            chessboardSquare[possible_moves.get(i).move_square].drawOval(canvas);
+                        }
+                    }
+
+                    draw_semaphore = draw_semaphore_enum.NEW_MOVE;
+                }
+                break;
+
+            case NEW_MOVE:
+                new_move_square = getSquareClicked();
+                /* Second move received */
+                /* -------------------- */
+                if (new_move_square >= 0) {
+
+                    boolean move_found = false;
+
+                    /* Check if the move was legal */
+                    for (int i = 0; i < possible_moves.size(); i++){
+                        if (possible_moves.get(i).move_square == new_move_square){
+                            chessboardSquare[new_move_square].highlightSquare(canvas);
+                            move_found = true;
+                        }
+                    }
+
+                    /* Made an illegal move, reset moves */
+                    if (move_found == false){
+                        draw_semaphore = draw_semaphore_enum.FIRST_SELECTION;
+
+                        /* Render again without the previous overlay */
+                        freeLastMove();
+                        render_req = true;
+                    }
+
+                    /* The move was legal */
+                    else {
+                        chessboardSquare[new_move_square].loadPiece(chessboardSquare[selected_square].getPiece());
+                        chessboardSquare[new_move_square].drawSquare(canvas);
+
+                        chessboardSquare[selected_square].emptyPiece();
+                        chessboardSquare[selected_square].drawSquare(canvas);
+
+                        chessRuler.resetCheckDetected();
+
+                        draw_semaphore = draw_semaphore_enum.CHECK_PROMOTION;
+                        render_req = true;
+                    }
+                }
+                break;
+
+            case CHECK_PROMOTION:
+                draw_semaphore = draw_semaphore_enum.CHECK_CHECKS;
+                render_req = true;
+                break;
+
+            case SELECT_PROMOTION:
+                break;
+
+            case CHECK_CHECKS:
+                /* Check for check and checkmate */
+                check_detected = chessRuler.checkChecks(color_to_move);
+
+                draw_semaphore = draw_semaphore_enum.NEW_TURN;
+                render_req = true;
+                break;
+
+            case NEW_TURN:
+                newTurn();
+                render_req = true;
+                draw_semaphore = draw_semaphore_enum.FIRST_SELECTION;
+                break;
+        }
+
+
+
+
+
+        /* -------------------------------------------------------------------------------------- */
+
+//        /* Check for promotion */
+//        /* ------------------- */
+//        if (possible_promo == false) {
+//            possible_promo = chessRuler.checkPawnPromotion(highlight_square[1]);
+//        }
+//
+//        /* Check if promotion exists */
+//        if (possible_promo == true){
+//
+//            promotion_square = highlight_square[1];
+//            /* Must wait for the next turn */
+//            if (skip_turn == false){
+//                skip_turn = true;
+//                newTurn();
+//            }
+//        }
+//
+//        /* Remove the ovals */
+//        freeLastMove();
+//
+//        render_req = true;
+//
+//        newTurn();
+//
+//        if (possible_promo == true && skip_turn == true) {
+//
+//            drawPromotionVector(canvas);
+//            drawPromotedElement(highlight_square[0]);
+//
+//
+//            possible_promo = false;
+//            skip_turn = false;
+//            starting_point = true;
+//            chessboardSquare[highlight_square[0]].drawSquare(canvas);
+//
+//            newTurn();
+//        }
+//
+//        if (highlight_square[0] >= 0){
+//            /* Check for check and checkmate */
+//            check_detected = chessRuler.checkChecks(color_to_move);
+//        }
+//
+//        if (check_detected == -1 && highlight_square[1] >= 0) {
+//            /* Check for check and checkmate */
+//            check_detected = chessRuler.checkChecks(color_to_move);
+//        }
+//
+//        if (check_detected >= 0) {
+//            check_color = color_to_move;
+//            chessboardSquare[check_detected].checkHighlight(canvas);
+//        }
 
         if (render_req == true) {
             postInvalidate();
@@ -407,17 +500,9 @@ public class Chessboard extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (starting_point == true){
-            move_x_start = event.getX();
-            move_y_start = event.getY();
-            starting_point = false;
-        }
-        else {
-            move_x_end = event.getX();
-            move_y_end = event.getY();
-            starting_point = true;
-            new_move = true;
-        }
+        move_x_start = event.getX();
+        move_y_start = event.getY();
+        starting_point = false;
 
         postInvalidate();
 
@@ -425,47 +510,33 @@ public class Chessboard extends View {
     }
 
     private void newTurn(){
-        if (color_to_move == ChessPiece.chess_colors.white){
-            color_to_move = ChessPiece.chess_colors.black;
+        if (color_moving == ChessPiece.chess_colors.white){
+            color_moving = ChessPiece.chess_colors.black;
+            color_to_move = ChessPiece.chess_colors.white;
         }
         else {
-            color_to_move = ChessPiece.chess_colors.white;
+            color_moving = ChessPiece.chess_colors.white;
+            color_to_move = ChessPiece.chess_colors.black;
         }
     }
 
     private void freeLastMove(){
         move_x_start = -1;
         move_y_start = -1;
-        move_y_end = -1;
-        move_x_end = -1;
     }
 
-    private int[] getSquareClicked(){
-        boolean elemx = false, elemy = false;
-        int [] result = new int[2];
+    private int getSquareClicked(){
+        int result;
 
         for (int i = 0; i < 64; i++){
             if (((move_x_start >= square_positions[i][0]) && (move_x_start < square_positions[i][2])) &&
                     (move_y_start >= square_positions[i][1]) && (move_y_start < square_positions[i][3])){
-                result[0] = i;
-                elemx = true;
-            }
-
-            if (((move_x_end >= square_positions[i][0]) && (move_x_end < square_positions[i][2])) &&
-                    (move_y_end >= square_positions[i][1]) && (move_y_end < square_positions[i][3])){
-                result[1] = i;
-                elemy = true;
+                result = i;
+                return result;
             }
         }
 
-        if (elemx == false){
-            result[0] = -1;
-        }
-        if (elemy == false){
-            result[1] = -1;
-        }
-
-        return result;
+        return -1;
     }
 
 
