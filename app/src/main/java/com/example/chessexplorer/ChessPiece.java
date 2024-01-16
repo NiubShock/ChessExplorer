@@ -16,6 +16,8 @@ interface PieceOption {
     ArrayList<ChessMoves> getPossibleMoves(int selected_square, ChessboardSquare[] chessboard);
     void moveTo(int selected_square);
 
+    boolean checkPawnPromotion(int selected_square, ChessboardSquare[] chessboardSquares);
+
     default ArrayList<ChessMoves> checkUP(int selected_square, ChessboardSquare[] chessboard){
         ArrayList<ChessMoves> possible_moves = new ArrayList<>();
 

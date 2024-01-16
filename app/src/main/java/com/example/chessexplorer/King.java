@@ -131,4 +131,9 @@ public class King extends ChessPiece {
     public void moveTo(int selected_square) {
 
     }
+
+    @Override
+    public boolean checkPawnPromotion(int selected_square, ChessboardSquare[] chessboard){
+        return false;
+    }
 }

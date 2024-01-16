@@ -111,14 +111,14 @@ public class Chessboard extends View {
         chessSquarePromWhite[1].loadPiece(white_bishop);
 
         bmp = BitmapFactory.decodeResource(getResources(), drawable.white_rook);
-        NBQ_Piece white_rook = new NBQ_Piece(bmp, ChessPiece.pieces_number.rook, rect_src, ChessPiece.chess_colors.white);
+        Rook white_rook = new Rook(bmp, rect_src, ChessPiece.chess_colors.white);
         chessSquarePromWhite[2] = new ChessboardSquare(Color.DKGRAY, 0 , rect_size);
         chessSquarePromWhite[2].loadPiece(white_rook);
 
         bmp = BitmapFactory.decodeResource(getResources(), drawable.white_queen);
         NBQ_Piece white_queen = new NBQ_Piece(bmp, ChessPiece.pieces_number.queen, rect_src, ChessPiece.chess_colors.white);
         chessSquarePromWhite[3] = new ChessboardSquare(Color.DKGRAY, 0 , rect_size);
-        chessSquarePromWhite[3].loadPiece(white_bishop);
+        chessSquarePromWhite[3].loadPiece(white_queen);
         /* -------------------------------------------------------------------------------------- */
 
         /* Load data for the black promotion vector */
@@ -134,7 +134,7 @@ public class Chessboard extends View {
         chessSquarePromBlack[1].loadPiece(black_bishop);
 
         bmp = BitmapFactory.decodeResource(getResources(), drawable.black_rook);
-        NBQ_Piece black_rook = new NBQ_Piece(bmp, ChessPiece.pieces_number.rook, rect_src, ChessPiece.chess_colors.white);
+        Rook black_rook = new Rook(bmp, rect_src, ChessPiece.chess_colors.white);
         chessSquarePromBlack[2] = new ChessboardSquare(Color.DKGRAY, 0 , rect_size);
         chessSquarePromBlack[2].loadPiece(black_rook);
 
@@ -273,16 +273,19 @@ public class Chessboard extends View {
         }
     }
 
-    private void drawPromotedElement(int selected_square){
+    private boolean drawPromotedElement(int selected_square){
         for (int i = 0; i < 4; i++){
             if (selected_square == chessSquarePromWhite[i].getSquareNumber()){
                 chessboardSquare[new_move_square].loadPiece(chessSquarePromWhite[i].getPiece());
+                return true;
             }
 
             else if (selected_square == chessSquarePromBlack[i].getSquareNumber()){
                 chessboardSquare[new_move_square].loadPiece(chessSquarePromBlack[i].getPiece());
+                return true;
             }
         }
+        return false;
     }
 
     private void drawChessboard(Canvas canvas){
@@ -306,7 +309,7 @@ public class Chessboard extends View {
             check_color = color_to_move;
             chessboardSquare[check_detected].checkHighlight(canvas);
         }
-        if (possible_promo == true) {
+        if (possible_promo) {
             drawPromotionVector(canvas);
         }
 
@@ -320,20 +323,33 @@ public class Chessboard extends View {
                 /* --------------------------------------------------------- */
                 selected_square = getSquareClicked();
 
-                /* Check if a move has been made and the correct color has been selected */
-                if (selected_square >= 0 && chessboardSquare[selected_square].getPiece().getColor() == color_moving){
+                if (selected_square > 0 && chessboardSquare[selected_square].getPiece() != null) {
+                    /* Check if a move has been made and the correct color has been selected */
+                    if (selected_square >= 0 && chessboardSquare[selected_square].getPiece().getColor() == color_moving) {
 
-                    chessboardSquare[selected_square].highlightSquare(canvas);
+                        chessboardSquare[selected_square].highlightSquare(canvas);
 
-                    possible_moves = chessboardSquare[selected_square].getPiece().getPossibleMoves(selected_square, chessboardSquare);
-                    /* Check if the result is valid -> Return -1 if no piece selected */
-                    if (possible_moves.isEmpty() == false) {
+                        possible_moves = chessboardSquare[selected_square].getPiece().getPossibleMoves(selected_square, chessboardSquare);
+
+                        /* Check if the moves are going to parry or generate a check */
+                        boolean check_still_here = false;
                         for (int i = 0; i < possible_moves.size(); i++) {
-                            chessboardSquare[possible_moves.get(i).move_square].drawOval(canvas);
+                            check_still_here = checkCheckPersistence(color_to_move, selected_square, possible_moves.get(i).move_square, chessboardSquare);
+                            if (check_still_here) {
+                                possible_moves.remove(i);
+                                i--;
+                            }
                         }
-                    }
 
-                    draw_semaphore = draw_semaphore_enum.NEW_MOVE;
+                        /* Check if the result is valid -> Return -1 if no piece selected */
+                        if (!possible_moves.isEmpty()) {
+                            for (int i = 0; i < possible_moves.size(); i++) {
+                                chessboardSquare[possible_moves.get(i).move_square].drawOval(canvas);
+                            }
+                        }
+
+                        draw_semaphore = draw_semaphore_enum.NEW_MOVE;
+                    }
                 }
                 break;
 
@@ -354,7 +370,7 @@ public class Chessboard extends View {
                     }
 
                     /* Made an illegal move, reset moves */
-                    if (move_found == false){
+                    if (!move_found){
                         draw_semaphore = draw_semaphore_enum.FIRST_SELECTION;
 
                         /* Render again without the previous overlay */
@@ -370,20 +386,19 @@ public class Chessboard extends View {
                         chessboardSquare[selected_square].emptyPiece();
                         chessboardSquare[selected_square].drawSquare(canvas);
 
-                        chessRuler.resetCheckDetected();
+                        resetCheckDetected();
 
-                        draw_semaphore = draw_semaphore_enum.NEW_TURN;
+                        draw_semaphore = draw_semaphore_enum.CHECK_PROMOTION;
                         render_req = true;
                     }
                 }
                 break;
 
             case CHECK_PROMOTION:
-                /* Check for promotion */
-                possible_promo = chessRuler.checkPawnPromotion(new_move_square);
+                possible_promo = chessboardSquare[new_move_square].getPiece().checkPawnPromotion(new_move_square, chessboardSquare);
 
                 /* Check if promotion exists */
-                if (possible_promo == true){
+                if (possible_promo){
                     draw_semaphore = draw_semaphore_enum.DRAW_PROMOTION;
                 }
                 else{
@@ -400,17 +415,21 @@ public class Chessboard extends View {
             case SELECT_PROMOTION:
                 promotion_square = getSquareClicked();
 
-                drawPromotedElement(promotion_square);
+                boolean promo_done = drawPromotedElement(promotion_square);
 
-                possible_promo = false;
-                draw_semaphore = draw_semaphore_enum.CHECK_CHECKS;
-                render_req = true;
+                if (promo_done){
+                    possible_promo = false;
+                    draw_semaphore = draw_semaphore_enum.CHECK_CHECKS;
+                    render_req = true;
+                }
+
 
                 break;
 
             case CHECK_CHECKS:
+
                 /* Check for check and checkmate */
-                check_detected = chessRuler.checkChecks(color_to_move);
+                check_detected = checkChecks(chessboardSquare);
 
                 draw_semaphore = draw_semaphore_enum.NEW_TURN;
                 render_req = true;
@@ -532,5 +551,70 @@ public class Chessboard extends View {
         return -1;
     }
 
+    private void resetCheckDetected(){
+        check_detected = -1;
+    }
 
+    private int checkChecks(ChessboardSquare[] chessboard){
+        /* Check if one piece can attack the enemy king */
+        for (int i = 0; i < 64; i++) {
+            /* Check the pieces of the same color */
+            if (chessboard[i].getPiece() != null) {
+                if (chessboard[i].getPiece().color == color_moving) {
+                    ArrayList<ChessMoves> check_move = new ArrayList<>();
+                    check_move.addAll(chessboard[i].getPiece().getPossibleMoves(i, chessboardSquare));
+
+                    /* Check all the moves */
+                    for (int j = 0; j < check_move.size(); j++) {
+                        /* Check the capture move */
+                        if (check_move.get(j).move_type == ChessMoves.move_types.capture) {
+                            /* Check if attacks the king */
+                            if (chessboard[check_move.get(j).move_square].getPiece().piece_type == ChessPiece.pieces_number.king) {
+                                check_detected = check_move.get(j).move_square;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return check_detected;
+    }
+
+    private boolean checkCheckPersistence(ChessPiece.chess_colors color, int selected_square, int destination_square, ChessboardSquare[] chessboard){
+        boolean check_detected = false;
+
+        /* Make the move */
+        ChessPiece piece_mov = chessboard[destination_square].getPiece();
+        chessboard[destination_square].loadPiece(chessboard[selected_square].getPiece());
+        chessboard[selected_square].emptyPiece();
+
+        /* Check if one piece can attack the enemy king */
+        for (int i = 0; i < 64; i++){
+            /* Check the pieces of the same color */
+            if (chessboard[i].getPiece() != null) {
+                if (chessboard[i].getPiece().getColor() == color) {
+                    ArrayList<ChessMoves> check_move = new ArrayList<>(chessboard[i].getPiece().getPossibleMoves(i, chessboard));
+
+                    /* Check all the moves */
+                    for (int j = 0; j < check_move.size(); j++) {
+                        /* Check the capture move */
+                        if (check_move.get(j).move_type == ChessMoves.move_types.capture) {
+                            /* Check if attacks the king */
+                            if (chessboard[check_move.get(j).move_square].getPiece().piece_type == ChessPiece.pieces_number.king) {
+                                check_detected = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /* Undo the move */
+        chessboard[selected_square].loadPiece(chessboard[destination_square].getPiece());
+        chessboard[destination_square].loadPiece(piece_mov);
+
+        /* Return the result */
+        return check_detected;
+    }
 }

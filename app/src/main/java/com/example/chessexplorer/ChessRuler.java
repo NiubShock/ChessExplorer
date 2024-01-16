@@ -48,10 +48,10 @@ public class ChessRuler {
         boolean check_still_here = false;
 
         /* Check for checks detected previously */
-        if (/*check_detected == true && */check_persistence == true){
+        if (/*check_detected == true && */check_persistence){
             for (int i = 0; i < possible_moves.size(); i++){
                 check_still_here = checkCheckPersistence(color_to_move, selected_square, possible_moves.get(i).move_square);
-                if (check_still_here == true){
+                if (check_still_here){
                     possible_moves.remove(i);
                     i--;
                 }
@@ -68,13 +68,13 @@ public class ChessRuler {
         if (chessboard[selected_square].getPiece().getColor() == ChessPiece.chess_colors.white){
             /* Check if it is the first move */
             if (selected_square > 47 && selected_square < 56){
-                if (chessboard[selected_square - 8].isEmpty() == true){
+                if (chessboard[selected_square - 8].isEmpty()){
                     Chess_Move chess_move = new Chess_Move();
                     chess_move.move_square = selected_square - 8;
                     chess_move.move_type = move_types.move;
                     possible_moves.add(chess_move);
                 }
-                if (chessboard[selected_square - 16].isEmpty() == true) {
+                if (chessboard[selected_square - 16].isEmpty()) {
                     Chess_Move chess_move = new Chess_Move();
                     chess_move.move_square = selected_square - 16;
                     chess_move.move_type = move_types.move;
@@ -84,7 +84,7 @@ public class ChessRuler {
             /* Not the first move */
             else {
                 if (selected_square - 8 > 0){
-                    if (chessboard[selected_square - 8].isEmpty() == true){
+                    if (chessboard[selected_square - 8].isEmpty()){
                         Chess_Move chess_move = new Chess_Move();
                         chess_move.move_square = selected_square - 8;
                         chess_move.move_type = move_types.move;
@@ -950,19 +950,21 @@ public class ChessRuler {
         /* Check if one piece can attack the enemy king */
         for (int i = 0; i < 64; i++){
             /* Check the pieces of the same color */
-            if (chessboard[i].getPiece().getColor() != color){
-                ArrayList<ChessRuler.Chess_Move> check_move = new ArrayList<>(getPossibleMoves(i, false, color));
+            if (chessboard[i].getPiece() != null){
+                if (chessboard[i].getPiece().color != color) {
+                    ArrayList<Chess_Move> check_move = new ArrayList<>(getPossibleMoves(i, false, color));
 
-                /* Check all the moves */
-                for (int j = 0; j < check_move.size(); j++){
-                    /* Check the capture move */
-                    if (check_move.get(j).move_type == ChessRuler.move_types.capture){
-                        /* Check if attacks the king *//*
-                        if (chessboard[check_move.get(j).move_square].getPiece().getPieceType() == ChessPiece.pieces_number.king){
-                            check_detected = true;
-                            color_under_check = chessboard[i].getPiece().getColor();
-                            return check_move.get(j).move_square;
-                        }*/
+                    /* Check all the moves */
+                    for (int j = 0; j < check_move.size(); j++) {
+                        /* Check the capture move */
+                        if (check_move.get(j).move_type == ChessRuler.move_types.capture) {
+                            /* Check if attacks the king */
+                            if (chessboard[check_move.get(j).move_square].getPiece().piece_type == ChessPiece.pieces_number.king) {
+                                check_detected = true;
+                                color_under_check = chessboard[i].getPiece().getColor();
+                                return check_move.get(j).move_square;
+                            }
+                        }
                     }
                 }
             }

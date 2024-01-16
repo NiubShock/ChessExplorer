@@ -102,5 +102,21 @@ public class Pawn extends ChessPiece{
 
     }
 
+    @Override
+    public boolean checkPawnPromotion(int selected_square, ChessboardSquare[] chessboard){
 
+        /* Check the color and the piece */
+        if (chessboard[selected_square].getPiece().getColor() == ChessPiece.chess_colors.white){
+            if (selected_square >= 0 && selected_square <= 7){
+                return true;
+            }
+        }
+        else {
+            if (selected_square >= 56 && selected_square <= 63){
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

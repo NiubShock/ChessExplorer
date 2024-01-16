@@ -31,6 +31,11 @@ public class NBQ_Piece extends ChessPiece{
 
     }
 
+    @Override
+    public boolean checkPawnPromotion(int selected_square, ChessboardSquare[] chessboard){
+        return false;
+    }
+
     private ArrayList<ChessMoves> checkBishop(int selected_square, ChessboardSquare[] chessboard){
         ArrayList<ChessMoves> possible_moves = new ArrayList<>();
 
@@ -70,7 +75,7 @@ public class NBQ_Piece extends ChessPiece{
         move_square = selected_square + 16 - 1;
         limit = selected_square - selected_square % 8 + 16;
 
-        if (move_square > limit && (move_square >= 0 && move_square <= 63)) {
+        if (move_square >= limit && (move_square >= 0 && move_square <= 63)) {
             /* Empty move */
             if (chessboard[move_square].isEmpty() == true) {
                 possible_moves.add(new ChessMoves(move_square, ChessMoves.move_types.move));
