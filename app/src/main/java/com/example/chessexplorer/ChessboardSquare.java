@@ -10,7 +10,7 @@ import android.graphics.RectF;
 
 public class ChessboardSquare {
     private int         color;
-    private ChessPiece  piece;
+    private ChessPiece  piece = null;
     private int         square_number;
     private Rect        rect_size;
 
@@ -18,10 +18,9 @@ public class ChessboardSquare {
     private Rect        rect_position;
     private RectF       rect_f_position;
 
-    public ChessboardSquare(int color_init, ChessPiece piece_init, int square_number_init,
+    public ChessboardSquare(int color_init, int square_number_init,
                             Rect rect_size_init){
         color           = color_init;
-        piece           = piece_init;
         square_number   = square_number_init;
         rect_size       = rect_size_init;
 
@@ -40,7 +39,9 @@ public class ChessboardSquare {
         paint.setColor(color);
         canvas.drawRect(rect_position, paint);
 
-        piece.drawPiece(canvas, rect_position);
+        if (piece != null) {
+            piece.drawPiece(canvas, rect_position);
+        }
     }
 
     public void highlightSquare(Canvas canvas){

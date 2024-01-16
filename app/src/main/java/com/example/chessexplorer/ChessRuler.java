@@ -24,7 +24,7 @@ public class ChessRuler {
 
     public ArrayList<Chess_Move> getPossibleMoves(int selected_square, boolean check_persistence, ChessPiece.chess_colors color_to_move){
         ArrayList<Chess_Move> possible_moves = new ArrayList<>();
-        switch(chessboard[selected_square].getPieceType()){
+        /*switch(chessboard[selected_square].getPieceType()){
             case pawn:
                 possible_moves.addAll(checkPawn(selected_square));
                 break;
@@ -43,7 +43,7 @@ public class ChessRuler {
             case king:
                 possible_moves.addAll((checkKing(selected_square)));
                 break;
-        }
+        }*/
 
         boolean check_still_here = false;
 
@@ -180,7 +180,7 @@ public class ChessRuler {
     }
 
     public boolean checkPawnPromotion(int selected_square){
-        /* Check the color and the piece */
+        /* Check the color and the piece *//*
         if (chessboard[selected_square].getPieceType() == ChessPiece.pieces_number.pawn){
             if (chessboard[selected_square].getPiece().getColor() == ChessPiece.chess_colors.white){
                 if (selected_square >= 0 && selected_square <= 7){
@@ -192,7 +192,7 @@ public class ChessRuler {
                     return true;
                 }
             }
-        }
+        }*/
 
         return false;
     }
@@ -957,12 +957,12 @@ public class ChessRuler {
                 for (int j = 0; j < check_move.size(); j++){
                     /* Check the capture move */
                     if (check_move.get(j).move_type == ChessRuler.move_types.capture){
-                        /* Check if attacks the king */
+                        /* Check if attacks the king *//*
                         if (chessboard[check_move.get(j).move_square].getPiece().getPieceType() == ChessPiece.pieces_number.king){
                             check_detected = true;
                             color_under_check = chessboard[i].getPiece().getColor();
                             return check_move.get(j).move_square;
-                        }
+                        }*/
                     }
                 }
             }
@@ -993,10 +993,10 @@ public class ChessRuler {
                 for (int j = 0; j < check_move.size(); j++){
                     /* Check the capture move */
                     if (check_move.get(j).move_type == ChessRuler.move_types.capture){
-                        /* Check if attacks the king */
+                        /* Check if attacks the king *//*
                         if (chessboard[check_move.get(j).move_square].getPiece().getPieceType() == ChessPiece.pieces_number.king){
                             check_detected = true;
-                        }
+                        }*/
                     }
                 }
             }

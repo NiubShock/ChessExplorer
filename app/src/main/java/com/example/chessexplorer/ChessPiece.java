@@ -42,4 +42,8 @@ public abstract class ChessPiece {
         Paint paint = new Paint();
         canvas.drawBitmap(bmp, rect_size, rect_dst, paint);
     }
+
+    public chess_colors getColor(){
+        return color;
+    }
 }
