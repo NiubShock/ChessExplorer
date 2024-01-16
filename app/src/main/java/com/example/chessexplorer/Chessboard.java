@@ -52,7 +52,7 @@ public class Chessboard extends View {
 
     ChessboardSquare[]      chessboardSquare;
     ChessRuler              chessRuler;
-    ArrayList<ChessRuler.Chess_Move>  possible_moves;
+    ArrayList<ChessMoves>   possible_moves;
 
     ChessboardSquare[]      chessSquarePromWhite;
     ChessboardSquare[]      chessSquarePromBlack;
@@ -250,7 +250,7 @@ public class Chessboard extends View {
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.white_king);
             King white_king = new King(bmp, rect_src, ChessPiece.chess_colors.white);
-            chessboardSquare[60].loadPiece(black_king);
+            chessboardSquare[60].loadPiece(white_king);
         }
         /* -------------------------------------------------------------------------------------- */
     }
@@ -325,8 +325,7 @@ public class Chessboard extends View {
 
                     chessboardSquare[selected_square].highlightSquare(canvas);
 
-                    possible_moves = chessRuler.getPossibleMoves(selected_square, true, color_moving);
-
+                    possible_moves = chessboardSquare[selected_square].getPiece().getPossibleMoves(selected_square, chessboardSquare);
                     /* Check if the result is valid -> Return -1 if no piece selected */
                     if (possible_moves.isEmpty() == false) {
                         for (int i = 0; i < possible_moves.size(); i++) {
@@ -373,7 +372,7 @@ public class Chessboard extends View {
 
                         chessRuler.resetCheckDetected();
 
-                        draw_semaphore = draw_semaphore_enum.CHECK_PROMOTION;
+                        draw_semaphore = draw_semaphore_enum.NEW_TURN;
                         render_req = true;
                     }
                 }
