@@ -8,7 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
 
-public class ChessPiece {
+public abstract class ChessPiece {
 
     /* Enum to define the piece definition */
     enum pieces_number{
@@ -26,47 +26,20 @@ public class ChessPiece {
         black
     }
 
-    private Bitmap          bmp;
-    private int             square_number;
-    private chess_colors    color;
-    private pieces_number   piece_type;
-    private Rect            rect_size;
+    protected Bitmap        bmp;
+    protected chess_colors  color;
+    protected pieces_number piece_type;
+    protected Rect          rect_size;
 
-    private Paint   paint;
-
-    public ChessPiece (Bitmap bmp_init, int square_number_init, pieces_number piece_type_init,
-                            Rect rect_size_init){
-        bmp             = bmp_init;
-        square_number   = square_number_init;
-        piece_type      = piece_type_init;
-        rect_size       = rect_size_init;
-
-    }
-
-    public void loadNewBmp(Bitmap bmp_new){
-        bmp = bmp_new;
-    }
-
-    public void loadColor(chess_colors color_init){
-        color = color_init;
-    }
-
-    public int getSquareNumber(){
-        return square_number;
-    }
-
-    public pieces_number getPieceType(){
-        return piece_type;
-    }
-
-    public void loadPieceType(pieces_number piece_type_new){
-        piece_type = piece_type_new;
-    }
-    public chess_colors getColor(){
-        return color;
+    public ChessPiece (Bitmap bmp, pieces_number piece_type, Rect rect_size, chess_colors color){
+        this.bmp            = bmp;
+        this.piece_type     = piece_type;
+        this.rect_size      = rect_size;
+        this.color          = color;
     }
 
     public void drawPiece(Canvas canvas, Rect rect_dst){
+        Paint paint = new Paint();
         canvas.drawBitmap(bmp, rect_size, rect_dst, paint);
     }
 }

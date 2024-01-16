@@ -162,6 +162,8 @@ public class Chessboard extends View {
         int square_position;
 
         Bitmap bmp_size = BitmapFactory.decodeResource(getResources(), drawable.black_pawn);
+        Bitmap bmp = Bitmap.createBitmap(rect_size.width(), rect_size.height(), Bitmap.Config.ARGB_8888);
+        Rect rect_src = new Rect(0, 0, bmp_size.getWidth(), bmp_size.getHeight());
 
         /* Load the btm size and the square properties */
         /* ------------------------------------------- */
@@ -179,8 +181,6 @@ public class Chessboard extends View {
                 /* Load the square position and an empty bmp */
                 square_position = i * 8 + j;
                 /* Load the data, not the Bitmap */
-                Bitmap bmp = Bitmap.createBitmap(rect_size.width(), rect_size.height(), Bitmap.Config.ARGB_8888);
-                Rect rect_src = new Rect(0, 0, bmp_size.getWidth(), bmp_size.getHeight());
                 ChessPiece piece = new ChessPiece(bmp, square_position, ChessPiece.pieces_number.none, rect_src);
 
                 chessboardSquare[square_position] = new ChessboardSquare(color, piece, square_position, rect_size);
@@ -191,87 +191,69 @@ public class Chessboard extends View {
         /* Place the pieces */
         /* ---------------- */
         {
-            Bitmap bmp = BitmapFactory.decodeResource(getResources(), drawable.black_pawn);
+            bmp = BitmapFactory.decodeResource(getResources(), drawable.black_pawn);
+            Pawn black_pawn = new Pawn(bmp, rect_src, ChessPiece.chess_colors.black);
             for (int i = 0; i < 8; i++) {
-                chessboardSquare[8 + i].loadNewBmp(bmp);
-                chessboardSquare[8 + i].loadPieceColor(ChessPiece.chess_colors.black);
-                chessboardSquare[8 + i].loadPieceType(ChessPiece.pieces_number.pawn);
+                chessboardSquare[8 + i].loadPiece(black_pawn);
             }
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.black_rook);
-            chessboardSquare[0].loadNewBmp(bmp);
-            chessboardSquare[0].loadPieceColor(ChessPiece.chess_colors.black);
-            chessboardSquare[0].loadPieceType(ChessPiece.pieces_number.rook);
-            chessboardSquare[7].loadNewBmp(bmp);
-            chessboardSquare[7].loadPieceColor(ChessPiece.chess_colors.black);
-            chessboardSquare[7].loadPieceType(ChessPiece.pieces_number.rook);
+            Rook black_rook = new Rook(bmp, rect_src, ChessPiece.chess_colors.black);
+            chessboardSquare[0].loadPiece(black_rook);
+            chessboardSquare[7].loadPiece(black_rook);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.black_knight);
-            chessboardSquare[1].loadNewBmp(bmp);
-            chessboardSquare[1].loadPieceColor(ChessPiece.chess_colors.black);
-            chessboardSquare[1].loadPieceType(ChessPiece.pieces_number.knight);
-            chessboardSquare[6].loadNewBmp(bmp);
-            chessboardSquare[6].loadPieceColor(ChessPiece.chess_colors.black);
-            chessboardSquare[6].loadPieceType(ChessPiece.pieces_number.knight);
+            NBQ_Piece black_knight = new NBQ_Piece(bmp, ChessPiece.pieces_number.knight,
+                    rect_src, ChessPiece.chess_colors.black);
+            chessboardSquare[1].loadPiece(black_knight);
+            chessboardSquare[6].loadPiece(black_knight);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.black_bishop);
-            chessboardSquare[2].loadNewBmp(bmp);
-            chessboardSquare[2].loadPieceColor(ChessPiece.chess_colors.black);
-            chessboardSquare[2].loadPieceType(ChessPiece.pieces_number.bishop);
-            chessboardSquare[5].loadNewBmp(bmp);
-            chessboardSquare[5].loadPieceColor(ChessPiece.chess_colors.black);
-            chessboardSquare[5].loadPieceType(ChessPiece.pieces_number.bishop);
+            NBQ_Piece black_bishop = new NBQ_Piece(bmp, ChessPiece.pieces_number.bishop,
+                    rect_src, ChessPiece.chess_colors.black);
+            chessboardSquare[2].loadPiece(black_bishop);
+            chessboardSquare[5].loadPiece(black_bishop);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.black_queen);
-            chessboardSquare[3].loadNewBmp(bmp);
-            chessboardSquare[3].loadPieceColor(ChessPiece.chess_colors.black);
-            chessboardSquare[3].loadPieceType(ChessPiece.pieces_number.queen);
+            NBQ_Piece black_queen = new NBQ_Piece(bmp, ChessPiece.pieces_number.queen,
+                    rect_src, ChessPiece.chess_colors.black);
+            chessboardSquare[3].loadPiece(black_queen);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.black_king);
-            chessboardSquare[4].loadNewBmp(bmp);
-            chessboardSquare[4].loadPieceColor(ChessPiece.chess_colors.black);
-            chessboardSquare[4].loadPieceType(ChessPiece.pieces_number.king);
+            King black_king = new King(bmp, rect_src, ChessPiece.chess_colors.black);
+            chessboardSquare[4].loadPiece(black_king);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.white_pawn);
+            Pawn white_pawn = new Pawn(bmp, rect_src, ChessPiece.chess_colors.white);
             for (int i = 0; i < 8; i++) {
-                chessboardSquare[48 + i].loadNewBmp(bmp);
-                chessboardSquare[48 + i].loadPieceColor(ChessPiece.chess_colors.white);
-                chessboardSquare[48 + i].loadPieceType(ChessPiece.pieces_number.pawn);
+                chessboardSquare[48 + i].loadPiece(white_pawn);
             }
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.white_rook);
-            chessboardSquare[56].loadNewBmp(bmp);
-            chessboardSquare[56].loadPieceColor(ChessPiece.chess_colors.white);
-            chessboardSquare[56].loadPieceType(ChessPiece.pieces_number.rook);
-            chessboardSquare[63].loadNewBmp(bmp);
-            chessboardSquare[63].loadPieceColor(ChessPiece.chess_colors.white);
-            chessboardSquare[63].loadPieceType(ChessPiece.pieces_number.rook);
+            Rook white_rook = new Rook(bmp, rect_src, ChessPiece.chess_colors.white);
+            chessboardSquare[56].loadPiece(white_rook);
+            chessboardSquare[63].loadPiece(white_rook);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.white_knight);
-            chessboardSquare[57].loadNewBmp(bmp);
-            chessboardSquare[57].loadPieceColor(ChessPiece.chess_colors.white);
-            chessboardSquare[57].loadPieceType(ChessPiece.pieces_number.knight);
-            chessboardSquare[62].loadNewBmp(bmp);
-            chessboardSquare[62].loadPieceColor(ChessPiece.chess_colors.white);
-            chessboardSquare[62].loadPieceType(ChessPiece.pieces_number.knight);
+            NBQ_Piece white_knight = new NBQ_Piece(bmp, ChessPiece.pieces_number.knight,
+                    rect_src, ChessPiece.chess_colors.white);
+            chessboardSquare[57].loadPiece(white_knight);
+            chessboardSquare[62].loadPiece(white_knight);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.white_bishop);
-            chessboardSquare[58].loadNewBmp(bmp);
-            chessboardSquare[58].loadPieceColor(ChessPiece.chess_colors.white);
-            chessboardSquare[58].loadPieceType(ChessPiece.pieces_number.bishop);
-            chessboardSquare[61].loadNewBmp(bmp);
-            chessboardSquare[61].loadPieceColor(ChessPiece.chess_colors.white);
-            chessboardSquare[61].loadPieceType(ChessPiece.pieces_number.bishop);
+            NBQ_Piece white_bishop = new NBQ_Piece(bmp, ChessPiece.pieces_number.bishop,
+                    rect_src, ChessPiece.chess_colors.white);
+            chessboardSquare[58].loadPiece(white_bishop);
+            chessboardSquare[61].loadPiece(white_bishop);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.white_queen);
-            chessboardSquare[59].loadNewBmp(bmp);
-            chessboardSquare[59].loadPieceColor(ChessPiece.chess_colors.white);
-            chessboardSquare[59].loadPieceType(ChessPiece.pieces_number.queen);
+            NBQ_Piece white_queen = new NBQ_Piece(bmp, ChessPiece.pieces_number.queen,
+                    rect_src, ChessPiece.chess_colors.white);
+            chessboardSquare[59].loadPiece(white_queen);
 
             bmp = BitmapFactory.decodeResource(getResources(), drawable.white_king);
-            chessboardSquare[60].loadNewBmp(bmp);
-            chessboardSquare[60].loadPieceColor(ChessPiece.chess_colors.white);
-            chessboardSquare[60].loadPieceType(ChessPiece.pieces_number.king);
+            King white_king = new King(bmp, rect_src, ChessPiece.chess_colors.white);
+            chessboardSquare[60].loadPiece(black_king);
         }
         /* -------------------------------------------------------------------------------------- */
     }
@@ -320,14 +302,6 @@ public class Chessboard extends View {
         }
     }
 
-    /*
-    [X] - Draw the chessboard and the pieces - Always
-    [ ] - Detect the selected square
-    [ ] - Show the possible moves
-    [ ] - Get the selected move
-    [ ] - Check for promotion
-    [ ] - Check for new checks
-     */
     @Override
     protected void onDraw(@NonNull Canvas canvas){
         super.onDraw(canvas);

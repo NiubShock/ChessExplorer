@@ -78,16 +78,8 @@ public class ChessboardSquare {
         canvas.drawOval(rect_f_position, paint);
     }
 
-    public void loadNewBmp(Bitmap bmp){
-        piece.loadNewBmp(bmp);
-    }
-
     public Rect getRectCoordinates(){
         return rect_position;
-    }
-
-    public ChessPiece.pieces_number getPieceType(){
-        return piece.getPieceType();
     }
 
     public ChessPiece getPiece(){
@@ -103,25 +95,16 @@ public class ChessboardSquare {
     }
 
     public void emptyPiece(){
-        /* Load the data, not the Bitmap */
-        Bitmap bmp = Bitmap.createBitmap(rect_size.width(), rect_size.height(), Bitmap.Config.ARGB_8888);
-
-        piece = new ChessPiece(bmp, square_number, ChessPiece.pieces_number.none, rect_size);
+        piece = null;
     }
 
     public boolean isEmpty(){
-        if (piece.getPieceType() == ChessPiece.pieces_number.none){
+        if (piece == null){
             return true;
         }
         else {
             return false;
         }
     }
-    public void loadPieceType(ChessPiece.pieces_number piece_type_new){
-        piece.loadPieceType(piece_type_new);
-    }
 
-    public void loadPieceColor(ChessPiece.chess_colors color_init){
-        piece.loadColor(color_init);
-    }
 }
