@@ -1,6 +1,7 @@
 package com.example.chessexplorer;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 
 import java.util.ArrayList;
@@ -26,8 +27,14 @@ public class Rook extends ChessPiece{
     }
 
     @Override
-    public void moveTo(int selected_square) {
+    public void moveTo(int selected_square, int new_move_square, ChessboardSquare[] chessboard, Canvas canvas) {
+        chessboard[new_move_square].loadPiece(chessboard[selected_square].getPiece());
+        chessboard[new_move_square].drawSquare(canvas);
 
+        chessboard[selected_square].emptyPiece();
+        chessboard[selected_square].drawSquare(canvas);
+
+        piece_moved = true;
     }
 
     @Override

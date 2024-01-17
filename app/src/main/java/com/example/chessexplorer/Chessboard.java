@@ -51,7 +51,7 @@ public class Chessboard extends View {
     Rect                    rect_size;
 
     ChessboardSquare[]      chessboardSquare;
-    ChessRuler              chessRuler;
+//    ChessRuler              chessRuler;
     ArrayList<ChessMoves>   possible_moves;
 
     ChessboardSquare[]      chessSquarePromWhite;
@@ -91,7 +91,7 @@ public class Chessboard extends View {
         loadCoordinates();
 
         /* Initialize the ruler */
-        chessRuler = new ChessRuler(chessboardSquare);
+//        chessRuler = new ChessRuler(chessboardSquare);
 
         /* Initialize the vector for promotion */
         chessSquarePromWhite = new ChessboardSquare[4];
@@ -124,22 +124,22 @@ public class Chessboard extends View {
         /* Load data for the black promotion vector */
         /* ---------------------------------------- */
         bmp = BitmapFactory.decodeResource(getResources(), drawable.black_knight);
-        NBQ_Piece black_knight = new NBQ_Piece(bmp, ChessPiece.pieces_number.knight, rect_src, ChessPiece.chess_colors.white);
+        NBQ_Piece black_knight = new NBQ_Piece(bmp, ChessPiece.pieces_number.knight, rect_src, ChessPiece.chess_colors.black);
         chessSquarePromBlack[0] = new ChessboardSquare(Color.DKGRAY, 0 , rect_size);
         chessSquarePromBlack[0].loadPiece(black_knight);
 
         bmp = BitmapFactory.decodeResource(getResources(), drawable.black_bishop);
-        NBQ_Piece black_bishop = new NBQ_Piece(bmp, ChessPiece.pieces_number.bishop, rect_src, ChessPiece.chess_colors.white);
+        NBQ_Piece black_bishop = new NBQ_Piece(bmp, ChessPiece.pieces_number.bishop, rect_src, ChessPiece.chess_colors.black);
         chessSquarePromBlack[1] = new ChessboardSquare(Color.DKGRAY, 0 , rect_size);
         chessSquarePromBlack[1].loadPiece(black_bishop);
 
         bmp = BitmapFactory.decodeResource(getResources(), drawable.black_rook);
-        Rook black_rook = new Rook(bmp, rect_src, ChessPiece.chess_colors.white);
+        Rook black_rook = new Rook(bmp, rect_src, ChessPiece.chess_colors.black);
         chessSquarePromBlack[2] = new ChessboardSquare(Color.DKGRAY, 0 , rect_size);
         chessSquarePromBlack[2].loadPiece(black_rook);
 
         bmp = BitmapFactory.decodeResource(getResources(), drawable.black_queen);
-        NBQ_Piece black_queen = new NBQ_Piece(bmp, ChessPiece.pieces_number.queen, rect_src, ChessPiece.chess_colors.white);
+        NBQ_Piece black_queen = new NBQ_Piece(bmp, ChessPiece.pieces_number.queen, rect_src, ChessPiece.chess_colors.black);
         chessSquarePromBlack[3] = new ChessboardSquare(Color.DKGRAY, 0 , rect_size);
         chessSquarePromBlack[3].loadPiece(black_queen);
         /* -------------------------------------------------------------------------------------- */
@@ -323,7 +323,7 @@ public class Chessboard extends View {
                 /* --------------------------------------------------------- */
                 selected_square = getSquareClicked();
 
-                if (selected_square > 0 && chessboardSquare[selected_square].getPiece() != null) {
+                if (selected_square >= 0 && chessboardSquare[selected_square].getPiece() != null) {
                     /* Check if a move has been made and the correct color has been selected */
                     if (selected_square >= 0 && chessboardSquare[selected_square].getPiece().getColor() == color_moving) {
 
@@ -380,11 +380,7 @@ public class Chessboard extends View {
 
                     /* The move was legal */
                     else {
-                        chessboardSquare[new_move_square].loadPiece(chessboardSquare[selected_square].getPiece());
-                        chessboardSquare[new_move_square].drawSquare(canvas);
-
-                        chessboardSquare[selected_square].emptyPiece();
-                        chessboardSquare[selected_square].drawSquare(canvas);
+                        chessboardSquare[selected_square].getPiece().moveTo(selected_square, new_move_square, chessboardSquare, canvas);
 
                         resetCheckDetected();
 
@@ -502,7 +498,7 @@ public class Chessboard extends View {
 //            chessboardSquare[check_detected].checkHighlight(canvas);
 //        }
 
-        if (render_req == true) {
+        if (render_req) {
             postInvalidate();
             render_req = false;
         }
@@ -561,8 +557,7 @@ public class Chessboard extends View {
             /* Check the pieces of the same color */
             if (chessboard[i].getPiece() != null) {
                 if (chessboard[i].getPiece().color == color_moving) {
-                    ArrayList<ChessMoves> check_move = new ArrayList<>();
-                    check_move.addAll(chessboard[i].getPiece().getPossibleMoves(i, chessboardSquare));
+                    ArrayList<ChessMoves> check_move = new ArrayList<>(chessboard[i].getPiece().getPossibleMoves(i, chessboardSquare));
 
                     /* Check all the moves */
                     for (int j = 0; j < check_move.size(); j++) {

@@ -1,6 +1,7 @@
 package com.example.chessexplorer;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 
 import java.util.ArrayList;
@@ -27,8 +28,12 @@ public class NBQ_Piece extends ChessPiece{
     }
 
     @Override
-    public void moveTo(int selected_square) {
+    public void moveTo(int selected_square, int new_move_square, ChessboardSquare[] chessboard, Canvas canvas) {
+        chessboard[new_move_square].loadPiece(chessboard[selected_square].getPiece());
+        chessboard[new_move_square].drawSquare(canvas);
 
+        chessboard[selected_square].emptyPiece();
+        chessboard[selected_square].drawSquare(canvas);
     }
 
     @Override
@@ -77,7 +82,7 @@ public class NBQ_Piece extends ChessPiece{
 
         if (move_square >= limit && (move_square >= 0 && move_square <= 63)) {
             /* Empty move */
-            if (chessboard[move_square].isEmpty() == true) {
+            if (chessboard[move_square].isEmpty()) {
                 possible_moves.add(new ChessMoves(move_square, ChessMoves.move_types.move));
             }
             /* Capture piece */
@@ -91,7 +96,7 @@ public class NBQ_Piece extends ChessPiece{
 
         if (move_square <= limit && (move_square >= 0 && move_square <= 63)) {
             /* Empty move */
-            if (chessboard[move_square].isEmpty() == true) {
+            if (chessboard[move_square].isEmpty()) {
                 possible_moves.add(new ChessMoves(move_square, ChessMoves.move_types.move));
             }
             /* Capture piece */
@@ -108,7 +113,7 @@ public class NBQ_Piece extends ChessPiece{
 
         if (move_square >= limit && (move_square >= 0 && move_square <= 63)) {
             /* Empty move */
-            if (chessboard[move_square].isEmpty() == true) {
+            if (chessboard[move_square].isEmpty()) {
                 possible_moves.add(new ChessMoves(move_square, ChessMoves.move_types.move));
             }
             /* Capture piece */
@@ -122,7 +127,7 @@ public class NBQ_Piece extends ChessPiece{
 
         if (move_square <= limit && (move_square >= 0 && move_square <= 63)) {
             /* Empty move */
-            if (chessboard[move_square].isEmpty() == true) {
+            if (chessboard[move_square].isEmpty()) {
                 possible_moves.add(new ChessMoves(move_square, ChessMoves.move_types.move));
             }
             /* Capture piece */
@@ -139,7 +144,7 @@ public class NBQ_Piece extends ChessPiece{
 
         if (move_square >= limit && (move_square >= 0 && move_square <= 63)) {
             /* Empty move */
-            if (chessboard[move_square].isEmpty() == true) {
+            if (chessboard[move_square].isEmpty()) {
                 possible_moves.add(new ChessMoves(move_square, ChessMoves.move_types.move));
             }
             /* Capture piece */
@@ -153,7 +158,7 @@ public class NBQ_Piece extends ChessPiece{
 
         if (move_square >= limit && (move_square >= 0 && move_square <= 63)) {
             /* Empty move */
-            if (chessboard[move_square].isEmpty() == true) {
+            if (chessboard[move_square].isEmpty()) {
                 possible_moves.add(new ChessMoves(move_square, ChessMoves.move_types.move));
             }
             /* Capture piece */
@@ -170,7 +175,7 @@ public class NBQ_Piece extends ChessPiece{
 
         if (move_square <= limit && (move_square >= 0 && move_square <= 63)) {
             /* Empty move */
-            if (chessboard[move_square].isEmpty() == true) {
+            if (chessboard[move_square].isEmpty()) {
                 possible_moves.add(new ChessMoves(move_square, ChessMoves.move_types.move));
             }
             /* Capture piece */
@@ -184,7 +189,7 @@ public class NBQ_Piece extends ChessPiece{
 
         if (move_square <= limit && (move_square >= 0 && move_square <= 63)) {
             /* Empty move */
-            if (chessboard[move_square].isEmpty() == true) {
+            if (chessboard[move_square].isEmpty()) {
                 possible_moves.add(new ChessMoves(move_square, ChessMoves.move_types.move));
             }
             /* Capture piece */

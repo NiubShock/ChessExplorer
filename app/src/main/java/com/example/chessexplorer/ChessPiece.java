@@ -14,7 +14,7 @@ import java.util.ArrayList;
 interface PieceOption {
 
     ArrayList<ChessMoves> getPossibleMoves(int selected_square, ChessboardSquare[] chessboard);
-    void moveTo(int selected_square);
+    void moveTo(int selected_square, int new_move_square, ChessboardSquare[] chessboard, Canvas canvas);
 
     boolean checkPawnPromotion(int selected_square, ChessboardSquare[] chessboardSquares);
 
@@ -341,7 +341,7 @@ interface PieceOption {
     }
 }
 
-public abstract class ChessPiece implements PieceOption{
+public abstract class ChessPiece implements PieceOption {
 
     /* Enum to define the piece definition */
     enum pieces_number{
