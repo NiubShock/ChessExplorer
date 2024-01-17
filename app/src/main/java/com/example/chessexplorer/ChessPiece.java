@@ -1,13 +1,9 @@
 package com.example.chessexplorer;
 
-import android.content.Context;
-import android.content.PeriodicSync;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.view.View;
 
 import java.util.ArrayList;
 
@@ -31,7 +27,7 @@ interface PieceOption {
             /* Check if out of range */
             if (square_counter < 64) {
                 /* Collision with another piece */
-                if (chessboard[square_counter].isEmpty() == false) {
+                if (!chessboard[square_counter].isEmpty()) {
                     stop_search = true;
 
                     /* Check if it is a capture */
@@ -47,7 +43,7 @@ interface PieceOption {
             else {
                 stop_search = true;
             }
-        }while(stop_search == false);
+        }while(!stop_search);
 
         return possible_moves;
     }
@@ -66,7 +62,7 @@ interface PieceOption {
             /* Check if out range */
             if (square_counter > 0) {
                 /* Collision with another piece */
-                if (chessboard[square_counter].isEmpty() == false) {
+                if (!chessboard[square_counter].isEmpty()) {
                     stop_search = true;
 
                     /* Check if it is a capture */
@@ -82,7 +78,7 @@ interface PieceOption {
             else{
                 stop_search = true;
             }
-        }while(stop_search == false);
+        }while(!stop_search);
 
         return possible_moves;
     }
@@ -104,7 +100,7 @@ interface PieceOption {
             /* Check if out of range */
             if (square_counter >= limit) {
                 /* Collision with another piece */
-                if (chessboard[square_counter].isEmpty() == false) {
+                if (!chessboard[square_counter].isEmpty()) {
                     stop_search = true;
 
                     /* Check if it is a capture */
@@ -120,7 +116,7 @@ interface PieceOption {
             else{
                 stop_search = true;
             }
-        }while(stop_search == false);
+        }while(!stop_search);
 
         return possible_moves;
     }
@@ -147,7 +143,7 @@ interface PieceOption {
                 /* Check if out of limit */
                 if (square_counter < limit) {
                     /* Collision with another piece */
-                    if (chessboard[square_counter].isEmpty() == false) {
+                    if (!chessboard[square_counter].isEmpty()) {
                         stop_search = true;
 
                         /* Check if it is a capture */
@@ -163,7 +159,7 @@ interface PieceOption {
                 else{
                     stop_search = true;
                 }
-            }while(stop_search == false);
+            }while(!stop_search);
         }
 
         return possible_moves;
@@ -186,7 +182,7 @@ interface PieceOption {
                 /* Check if out of limit */
                 if (square_counter <= limit && square_counter < 64) {
                     /* Collision with another piece */
-                    if (chessboard[square_counter].isEmpty() == false) {
+                    if (!chessboard[square_counter].isEmpty()) {
                         stop_search = true;
 
                         /* Check if it is a capture */
@@ -206,7 +202,7 @@ interface PieceOption {
                 else{
                     stop_search = true;
                 }
-            }while(stop_search == false);
+            }while(!stop_search);
         }
 
         return possible_moves;
@@ -229,7 +225,7 @@ interface PieceOption {
                 /* Check if out of limit */
                 if (square_counter >= limit && square_counter < 64) {
                     /* Collision with another piece */
-                    if (chessboard[square_counter].isEmpty() == false) {
+                    if (!chessboard[square_counter].isEmpty()) {
                         stop_search = true;
 
                         /* Check if it is a capture */
@@ -249,7 +245,7 @@ interface PieceOption {
                 else{
                     stop_search = true;
                 }
-            }while(stop_search == false);
+            }while(!stop_search);
         }
 
         return possible_moves;
@@ -273,7 +269,7 @@ interface PieceOption {
                 /* Check if out of limit */
                 if (square_counter <= limit && square_counter >= 0) {
                     /* Collision with another piece */
-                    if (chessboard[square_counter].isEmpty() == false) {
+                    if (!chessboard[square_counter].isEmpty()) {
                         stop_search = true;
 
                         /* Check if it is a capture */
@@ -292,7 +288,7 @@ interface PieceOption {
                 } else {
                     stop_search = true;
                 }
-            } while (stop_search == false);
+            } while (!stop_search);
         }
         return possible_moves;
     }
@@ -314,7 +310,7 @@ interface PieceOption {
                 /* Check if out of limit */
                 if (square_counter >= limit && square_counter >= 0) {
                     /* Collision with another piece */
-                    if (chessboard[square_counter].isEmpty() == false) {
+                    if (!chessboard[square_counter].isEmpty()) {
                         stop_search = true;
 
                         /* Check if it is a capture */
@@ -334,7 +330,7 @@ interface PieceOption {
                 else{
                     stop_search = true;
                 }
-            }while(stop_search == false);
+            }while(!stop_search);
         }
 
         return possible_moves;
@@ -345,7 +341,6 @@ public abstract class ChessPiece implements PieceOption {
 
     /* Enum to define the piece definition */
     enum pieces_number{
-        none,
         pawn,
         rook,
         knight,

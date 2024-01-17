@@ -9,11 +9,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 
@@ -37,9 +34,7 @@ public class Chessboard extends View {
     float                   move_x_start = -1, move_y_start = -1;
 
     boolean                 starting_point                  = true;
-    boolean                 new_move                        = false;
     boolean                 possible_promo                  = false;
-    boolean                 skip_turn                       = false;
     boolean                 render_req                      = false;
 
     int                     check_detected                  = -1;
@@ -51,7 +46,6 @@ public class Chessboard extends View {
     Rect                    rect_size;
 
     ChessboardSquare[]      chessboardSquare;
-//    ChessRuler              chessRuler;
     ArrayList<ChessMoves>   possible_moves;
 
     ChessboardSquare[]      chessSquarePromWhite;
@@ -75,10 +69,7 @@ public class Chessboard extends View {
         /* -------------------------------------- */
         float size_x_rect = (float) (Resources.getSystem().getDisplayMetrics().widthPixels/8.0); // 135; //(float) (this.getWidth()/8.0);
         float size_y_rect = (float) (Resources.getSystem().getDisplayMetrics().heightPixels/8.0);// 135; //(float) (this.getHeight()/8.0);
-        float square_size;
-
-        if (size_x_rect < size_y_rect)  square_size = size_x_rect;
-        else                            square_size = size_y_rect;
+        float square_size = Math.min(size_x_rect, size_y_rect);
 
         /* Declare the square size */
         rect_size = new Rect(0, 0, (int) square_size, (int) square_size);
@@ -89,9 +80,6 @@ public class Chessboard extends View {
 
         /* Load the coordinates */
         loadCoordinates();
-
-        /* Initialize the ruler */
-//        chessRuler = new ChessRuler(chessboardSquare);
 
         /* Initialize the vector for promotion */
         chessSquarePromWhite = new ChessboardSquare[4];
@@ -332,7 +320,7 @@ public class Chessboard extends View {
                         possible_moves = chessboardSquare[selected_square].getPiece().getPossibleMoves(selected_square, chessboardSquare);
 
                         /* Check if the moves are going to parry or generate a check */
-                        boolean check_still_here = false;
+                        boolean check_still_here;
                         for (int i = 0; i < possible_moves.size(); i++) {
                             check_still_here = checkCheckPersistence(color_to_move, selected_square, possible_moves.get(i).move_square, chessboardSquare);
                             if (check_still_here) {

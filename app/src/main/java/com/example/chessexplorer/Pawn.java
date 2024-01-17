@@ -55,7 +55,7 @@ public class Pawn extends ChessPiece{
             }
             /* Pawn in the last row - Possible promotion */
             else {
-                /* In case of promotion return the same square as the piece doesnt move */
+                /* In case of promotion return the same square as the piece doesn't move */
                 possible_moves.add(new ChessMoves(selected_square, ChessMoves.move_types.move));
             }
         }
@@ -94,7 +94,7 @@ public class Pawn extends ChessPiece{
             }
             /* Pawn in the last row - Possible promotion */
             else {
-                /* In case of promotion return the same square as the piece doesnt move */
+                /* In case of promotion return the same square as the piece doesn't move */
                 possible_moves.add(new ChessMoves(selected_square, ChessMoves.move_types.move));
             }
         }
