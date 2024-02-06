@@ -18,12 +18,8 @@ Then, different classes are using this interface and superclass to implement ad-
 - King -> This class represent the king
 
 ## Graphical Implmentation
-<img align="left" width="160" src="https://github.com/NiubShock/ChessExplorer/assets/37460778/105cb33a-10e4-43bc-bf97-8ee21698b74e" />
-<img align="left" width="160" src="https://github.com/NiubShock/ChessExplorer/assets/37460778/ae808afb-f0ad-4e86-b4ef-313e13b0758f" />
-<img align="left" width="160" src="https://github.com/NiubShock/ChessExplorer/assets/37460778/2a721779-8ffb-4a0d-adcc-27140febf95e" />
-<img align="left" width="160" src="https://github.com/NiubShock/ChessExplorer/assets/37460778/341e5c94-67f0-4f11-92da-835b3da83f60" />
-<img align="left" width="170" src="https://github.com/NiubShock/ChessExplorer/assets/37460778/42802934-f85a-440c-a5bb-0cf3af0b104a" />
-The first image shows the chessboard at the start of the game. The intial turn is for white as per the rules.</br>
+<img width="165" src="https://github.com/NiubShock/ChessExplorer/assets/37460778/105cb33a-10e4-43bc-bf97-8ee21698b74e" /> <img width="170" src="https://github.com/NiubShock/ChessExplorer/assets/37460778/ae808afb-f0ad-4e86-b4ef-313e13b0758f" /> <img width="165" src="https://github.com/NiubShock/ChessExplorer/assets/37460778/2a721779-8ffb-4a0d-adcc-27140febf95e" /> <img width="167" src="https://github.com/NiubShock/ChessExplorer/assets/37460778/341e5c94-67f0-4f11-92da-835b3da83f60" /> <img width="172" src="https://github.com/NiubShock/ChessExplorer/assets/37460778/42802934-f85a-440c-a5bb-0cf3af0b104a" />
+</br> The first image shows the chessboard at the start of the game. The intial turn is for white as per the rules.</br>
 The second board shows the legal moves of the selected piece (pawn on e5). These moves are passed as a list from the function GetPossibleMoves.</br>
 The third image shows a check, when a player gives a check the king square becomes red. By selecting any pieces the legal moves returned will be only those that can parry or remove the check.</br>
 The forth image shows the promotion possibilities, by clicking on one of them the pawn will become that piece instead. If the promotion arise a new check the king will be again on a red square and the legal moves must be those that remove/parry the check, as in the picture five.
